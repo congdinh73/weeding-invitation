@@ -1,14 +1,15 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import Particles from '@tsparticles/vue3'
+import { loadSlim } from '@tsparticles/slim'
 import './styles/index.css'
 
-const registerParticles = async engine => {
-	const [{ loadSlim }] = await Promise.all([import('@tsparticles/slim')])
+const app = createApp(App)
 
-	await loadSlim(engine)
-}
+app.use(Particles, {
+  init: async (engine) => {
+    await loadSlim(engine)
+  }
+})
 
-createApp(App)
-	.use(Particles, { init: registerParticles })
-	.mount('#app')
+app.mount('#app')
