@@ -1,0 +1,86 @@
+{
+  "fpsLimit": 28,
+  "fullScreen": {
+    "enable": false,
+    "zIndex": 0
+  },
+  "detectRetina": true,
+  "background": {
+    "color": {
+      "value": "transparent"
+    }
+  },
+  "interactivity": {
+    "events": {
+      "onClick": {
+        "enable": false
+      },
+      "onHover": {
+        "enable": false
+      },
+      "resize": true
+    }
+  },
+  "particles": {
+    "number": {
+      "value": 24,
+      "density": {
+        "enable": false
+      }
+    },
+    "shape": {
+      "type": "image",
+      "options": {
+        "image": {
+          "src": "/forest-leaf.svg",
+          "width": 28,
+          "height": 38,
+          "replaceColor": false
+        }
+      }
+    },
+    "color": {
+      "value": ["#E8F3ED", "#FFFFFF"]
+    },
+    "opacity": {
+      "value": {
+        "min": 0.22,
+        "max": 0.5
+      },
+      "animation": {
+        "enable": true,
+        "speed": 0.2,
+        "sync": false,
+        "startValue": "random"
+      }
+    },
+    "size": {
+      "value": {
+        "min": 10,
+        "max": 17
+      }
+    },
+    "rotate": {
+      "value": {
+        "min": 0,
+        "max": 360
+      },
+      "direction": "random",
+      "animation": {
+        "enable": true,
+        "speed": 2.0,
+        "sync": false
+      }
+    },
+    "move": {
+      "enable": true,
+      "direction": "bottom",
+      "speed": 0.26,
+      "random": true,
+      "straight": false,
+      "outModes": {
+        "default": "out"
+      }
+    }
+  }
+}
