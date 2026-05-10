@@ -1,9 +1,8 @@
 <template>
   <div class="fixed bottom-4 left-4 z-50 sm:bottom-6 sm:left-6">
-    <audio ref="audioRef" loop preload="auto">
-      <source src="/wedding-song.mp3" type="audio/mpeg" />
-      <source src="./public/wedding-song.mp3" type="audio/mpeg" />
-    </audio>
+   <audio ref="audioRef" loop preload="auto">
+  <source src="/wedding-song.mp3" type="audio/mpeg" />
+</audio>
 
     <button
       type="button"
