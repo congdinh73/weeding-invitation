@@ -24,7 +24,7 @@
           <p class="text-[0.62rem] uppercase tracking-[0.4em] text-forest/55">Wedding Invitation</p>
           <p class="font-serif text-lg leading-none text-forest">{{ coupleDisplay }}</p>
         </div>
-        <nav class="hidden items-center gap-6 text-sm text-forest/70 md:flex">
+        <nav class="hidden items-center gap-6 text-sm tracking-[0.08em] text-forest/70 md:flex">
           <a href="#invitation" class="transition hover:text-gold">Lời mời</a>
           <a href="#events" class="transition hover:text-gold">Sự kiện</a>
           <a href="#gallery" class="transition hover:text-gold">Bộ sưu tập</a>
@@ -34,17 +34,17 @@
     </header>
 
     <main v-show="showMainContent" class="relative z-10">
-      <section class="relative overflow-hidden pt-3 sm:pt-4 lg:pt-0">
+      <section class="hero-stage relative overflow-hidden pt-3 sm:pt-4 lg:pt-0">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(26,67,49,0.16),_transparent_36%),linear-gradient(180deg,#fff 0%,#f7fbf8 100%)]"></div>
         <div class="absolute inset-0 opacity-40 leaf-pattern"></div>
 
         <div class="relative mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-8 lg:py-20">
           <div class="order-2 flex flex-col justify-center gap-7 text-center lg:order-1 lg:text-left">
-            <div class="inline-flex self-center rounded-full border border-gold/40 bg-white/75 px-4 py-2 text-[0.65rem] uppercase tracking-[0.35em] text-forest/70 shadow-soft lg:self-start">
+            <div class="stagger-item inline-flex self-center rounded-full border border-gold/40 bg-white/75 px-4 py-2 text-[0.65rem] uppercase tracking-[0.35em] text-forest/70 shadow-soft lg:self-start" style="--stagger-index: 1">
               Thân mời
             </div>
 
-            <div class="mx-auto flex w-full max-w-xs items-center justify-center gap-3 lg:mx-0 lg:justify-start">
+            <div class="stagger-item mx-auto flex w-full max-w-xs items-center justify-center gap-3 lg:mx-0 lg:justify-start" style="--stagger-index: 2">
               <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/70 to-transparent"></span>
               <span class="rounded-full border border-gold/35 bg-white/80 px-3 py-1 text-[0.62rem] uppercase tracking-[0.38em] text-forest/60 shadow-soft backdrop-blur">
                 Một ngày để nhớ
@@ -52,15 +52,15 @@
               <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/70 to-transparent"></span>
             </div>
 
-            <div class="space-y-3">
+            <div class="stagger-item space-y-3" style="--stagger-index: 3">
               <p class="text-sm uppercase tracking-[0.35em] text-forest/55">{{ weddingDateLabel }}</p>
-              <h1 class="font-serif text-4xl leading-[1.05] text-forest sm:text-5xl lg:text-7xl">{{ brideName }} &amp; {{ groomName }}</h1>
-              <p class="mx-auto max-w-xl text-base leading-8 text-forest/75 lg:mx-0 lg:text-lg">
+              <h1 class="luxury-stroke-title font-serif text-4xl leading-[1.02] text-forest sm:text-5xl lg:text-7xl">{{ brideName }} &amp; {{ groomName }}</h1>
+              <p class="hero-copy mx-auto max-w-xl text-base leading-8 text-forest/75 lg:mx-0 lg:text-lg">
                 Chúng tôi trân trọng kính mời gia đình và bạn bè đến chung vui trong ngày cưới. Một buổi gặp gỡ ấm áp, giản dị và tinh tế, được chuẩn bị bằng tất cả tình yêu.
               </p>
             </div>
 
-            <div class="flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+            <div class="stagger-item flex flex-wrap items-center justify-center gap-3 lg:justify-start" style="--stagger-index: 4">
               <a href="#rsvp" class="inline-flex items-center justify-center rounded-full bg-forest px-6 py-3 text-sm font-medium text-white shadow-soft transition duration-300 hover:-translate-y-0.5 hover:bg-forest-strong">
                 Xác nhận tham dự
               </a>
@@ -69,7 +69,7 @@
               </a>
             </div>
 
-            <div class="grid grid-cols-4 gap-3 sm:max-w-xl">
+            <div class="stagger-item grid grid-cols-4 gap-3 sm:max-w-xl" style="--stagger-index: 5">
               <div v-for="(box, index) in countdownBoxes" :key="box.label" class="rounded-3xl border border-white/30 bg-white/80 p-3 text-center shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] backdrop-blur-lg" :style="`transform: translate3d(calc(var(--mouse-x, 0) * -${5 + index*1.5}px), calc(var(--mouse-y, 0) * -${5 + index*1.5}px), 0); will-change: transform;`">
                 <p class="font-serif text-2xl text-forest sm:text-3xl">{{ box.value }}</p>
                 <p class="mt-1 text-[0.65rem] uppercase tracking-[0.25em] text-forest/55">{{ box.label }}</p>
@@ -80,18 +80,21 @@
           <div class="order-1 relative flex items-center justify-center pt-2 lg:order-2 lg:pt-0">
             <div class="absolute -right-4 top-6 hidden h-28 w-28 rounded-full border border-gold/30 lg:block"></div>
             <div class="absolute -left-5 bottom-10 hidden h-20 w-20 rounded-full border border-forest/15 lg:block"></div>
-            <div class="absolute -top-2 left-4 hidden rounded-[1.5rem] border border-gold/35 bg-white/85 px-4 py-3 text-left shadow-soft backdrop-blur lg:block">
-              <p class="text-[0.6rem] uppercase tracking-[0.35em] text-forest/50">Nét chấm phá</p>
-              <p class="mt-1 font-script text-3xl text-gold">Hẹn nhau</p>
-            </div>
 
-            <div class="relative w-full max-w-md overflow-hidden rounded-3xl border border-forest/10 bg-white/85 backdrop-blur-md shadow-2xl" style="transform: translate3d(calc(var(--mouse-x, 0) * -10px), calc(var(--mouse-y, 0) * -10px), 0); will-change: transform;">
+            <div class="stagger-item hero-card relative w-full max-w-md overflow-hidden rounded-3xl border border-forest/10 bg-white/85 backdrop-blur-md shadow-2xl" style="--stagger-index: 2; transform: translate3d(calc(var(--mouse-x, 0) * -10px), calc(var(--mouse-y, 0) * -10px), 0); will-change: transform;">
+              <div class="absolute inset-[1px] rounded-[1.4rem] border border-white/70"></div>
               <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.1)_40%,rgba(26,67,49,0.06)_100%)]"></div>
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.12),transparent_24%),radial-gradient(circle_at_80%_30%,rgba(26,67,49,0.1),transparent_28%)]"></div>
+              <div class="hero-card-sheen absolute inset-y-0 left-[-34%] w-[48%]"></div>
+              <div class="absolute -right-8 top-10 h-24 w-24 rounded-full bg-gold/15 blur-3xl"></div>
+              <div class="signature-rail absolute left-4 top-4 hidden flex-col items-start gap-2 text-forest/45 md:flex" aria-hidden="true">
+                <span class="signature-rail__line h-14 w-px bg-gradient-to-b from-transparent via-gold/70 to-transparent"></span>
+                <span class="signature-rail__label text-[0.55rem] uppercase tracking-[0.42em]">Est. 2026</span>
+              </div>
 
               <div class="relative flex flex-col gap-6 p-8">
                 <div class="flex items-center justify-between gap-3">
-                  <div class="rounded-full border border-white/70 bg-white/75 px-3 py-1 text-[0.62rem] uppercase tracking-[0.32em] text-[#1A4331] backdrop-blur font-medium">
+                  <div class="premium-chip rounded-full border border-white/70 bg-white/75 px-3 py-1 text-[0.62rem] uppercase tracking-[0.32em] text-[#1A4331] backdrop-blur font-medium">
                     Save the date
                   </div>
                   <div class="hidden rounded-full border border-gold/35 bg-white/75 px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-gold backdrop-blur sm:block font-medium">
@@ -137,18 +140,18 @@
       <OurStory />
 
       <section id="invitation" class="bg-white">
-        <div class="mx-auto w-full max-w-4xl px-4 py-14 text-center sm:px-6 lg:px-8 lg:py-20">
-          <p class="text-[0.7rem] uppercase tracking-[0.45em] text-forest/50">Lời mời</p>
+        <div class="invitation-panel mx-auto w-full max-w-4xl px-4 py-14 text-center sm:px-6 lg:px-8 lg:py-20">
+          <p class="editorial-kicker text-[0.7rem] uppercase tracking-[0.45em] text-forest/50">Lời mời</p>
           <div class="mx-auto mt-5 h-px w-16 bg-gold/60"></div>
           <div class="mx-auto mt-7 flex max-w-xl items-center justify-center gap-3 text-gold/80">
             <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/65 to-transparent"></span>
             <span class="text-lg">❧</span>
             <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/65 to-transparent"></span>
           </div>
-          <p class="mx-auto mt-6 max-w-2xl font-serif text-3xl leading-tight text-forest sm:text-4xl">
+          <p class="editorial-title mx-auto mt-6 max-w-2xl font-serif text-3xl leading-tight text-forest sm:text-4xl">
             Một lời mời chân thành, gọn gàng và đủ ấm để giữ lại trong ký ức.
           </p>
-          <p class="mx-auto mt-5 max-w-2xl text-base leading-8 text-forest/75 sm:text-lg">
+          <p class="editorial-body mx-auto mt-5 max-w-2xl text-base leading-8 text-forest/75 sm:text-lg">
             Sự hiện diện của anh/chị và gia đình là niềm vinh hạnh lớn nhất của chúng tôi trong ngày trọng đại. Rất mong được đón tiếp trong một không gian gần gũi, nhẹ nhàng và trọn vẹn yêu thương.
           </p>
         </div>
@@ -157,8 +160,8 @@
       <section id="events" class="bg-ivory/75">
         <div class="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
           <div class="flex flex-col gap-3 text-center">
-            <p class="text-[0.7rem] uppercase tracking-[0.45em] text-forest/50">Sự kiện</p>
-            <h2 class="font-serif text-3xl text-forest sm:text-4xl">Lịch trình ngày cưới</h2>
+            <p class="editorial-kicker text-[0.7rem] uppercase tracking-[0.45em] text-forest/50">Sự kiện</p>
+            <h2 class="editorial-title font-serif text-3xl text-forest sm:text-4xl">Lịch trình ngày cưới</h2>
           </div>
 
           <div class="mt-10 grid gap-4 lg:grid-cols-3">
@@ -338,13 +341,13 @@ let currentX = 0
 let currentY = 0
 
 const onMouseMove = (e) => {
-  targetX = (e.clientX / window.innerWidth) * 2 - 1
-  targetY = (e.clientY / window.innerHeight) * 2 - 1
+  targetX = ((e.clientX / window.innerWidth) * 2 - 1) * 0.58
+  targetY = ((e.clientY / window.innerHeight) * 2 - 1) * 0.58
 }
 
 const parallaxLoop = () => {
-  currentX += (targetX - currentX) * 0.035
-  currentY += (targetY - currentY) * 0.035
+  currentX += (targetX - currentX) * 0.022
+  currentY += (targetY - currentY) * 0.022
   
   if (Math.abs(targetX - currentX) > 0.001 || Math.abs(targetY - currentY) > 0.001) {
     document.documentElement.style.setProperty('--mouse-x', currentX.toFixed(4))
@@ -416,9 +419,116 @@ const gallery = [
 
 const rsvpHeading = computed(() => `Anh/Chị ${guestName}, vui lòng xác nhận tham dự`)
 const footerText = computed(() => `© 2026 ${brideName} & ${groomName} — Trân trọng cảm ơn`)
+
 </script>
 
 <style scoped>
+.hero-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(212, 175, 55, 0.12), transparent 22%),
+    linear-gradient(110deg, transparent 36%, rgba(255, 255, 255, 0.34) 52%, transparent 66%);
+  mix-blend-mode: soft-light;
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  animation: hero-stagger-in 0.95s cubic-bezier(0.18, 0.86, 0.24, 1) forwards;
+  animation-delay: calc(var(--stagger-index, 1) * 110ms + 180ms);
+}
+
+.hero-card {
+  box-shadow: 0 32px 68px rgba(18, 52, 37, 0.18), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.signature-rail__label {
+  transform: translateX(0.08rem);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+.hero-card-sheen {
+  background: linear-gradient(92deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0));
+  opacity: 0.28;
+  transform: skewX(-14deg);
+  animation: hero-sheen 10s ease-in-out infinite;
+}
+
+.premium-chip {
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.editorial-kicker {
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+}
+
+.editorial-title {
+  letter-spacing: 0.02em;
+  text-wrap: balance;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.editorial-body {
+  line-height: 1.95;
+  color: rgba(26, 67, 49, 0.74);
+}
+
+.luxury-stroke-title {
+  letter-spacing: 0.012em;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55), 0 16px 36px rgba(18, 52, 37, 0.12);
+}
+
+.hero-copy {
+  line-height: 1.95;
+  color: rgba(26, 67, 49, 0.76);
+}
+
+@keyframes hero-stagger-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes hero-sheen {
+  0%,
+  22% {
+    transform: translateX(0) skewX(-14deg);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.3;
+  }
+  58% {
+    transform: translateX(380%) skewX(-14deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(380%) skewX(-14deg);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-item,
+  .hero-card-sheen {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .main-entrance-enter-active {
   transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: 0.1s;

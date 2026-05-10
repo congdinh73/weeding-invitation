@@ -1,11 +1,23 @@
 <template>
-  <div class="fixed bottom-6 left-6 z-50">
-    <div 
-      class="flex items-center gap-3 rounded-full border border-gold/40 bg-white/70 px-4 py-2 backdrop-blur-md shadow-2xl transition-transform hover:-translate-y-1 hover:shadow-[0_25px_60px_-10px_rgba(26,67,49,0.2)] cursor-pointer"
+  <div class="fixed bottom-4 left-4 z-50 sm:bottom-6 sm:left-6">
+    <audio ref="audioRef" loop preload="auto">
+      <source src="/wedding-song.mp3" type="audio/mpeg" />
+      <source src="./public/wedding-song.mp3" type="audio/mpeg" />
+    </audio>
+
+    <button
+      type="button"
+      aria-label="Toggle wedding song"
+      class="flex items-center rounded-full border border-gold/40 bg-white/78 p-2.5 backdrop-blur-md shadow-2xl transition-transform hover:-translate-y-0.5 sm:hidden"
       @click="togglePlay"
     >
-      <audio ref="audioRef" src="/wedding-song.mp3" loop preload="auto"></audio>
-      
+      <MusicWave :is-playing="isPlaying" />
+    </button>
+
+    <div 
+      class="hidden cursor-pointer items-center gap-3 rounded-full border border-gold/40 bg-white/70 px-4 py-2 backdrop-blur-md shadow-2xl transition-transform hover:-translate-y-1 hover:shadow-[0_25px_60px_-10px_rgba(26,67,49,0.2)] sm:flex"
+      @click="togglePlay"
+    >
       <!-- Play/Pause Icon -->
       <div class="flex h-7 w-7 items-center justify-center rounded-full bg-forest text-white shadow-sm transition-transform duration-300" :class="{ 'scale-95': isPlaying }">
         <!-- Pause Icon -->
@@ -18,61 +30,117 @@
         </svg>
       </div>
       
-      <span class="font-serif text-[0.85rem] tracking-wide text-forest mt-px">Play our song</span>
+      <span class="song-label font-serif text-[0.85rem] tracking-wide text-forest mt-px">Play our song</span>
 
       <!-- Music Wave -->
-      <div class="flex items-end gap-[3px] h-3.5 ml-1">
-        <div class="w-[2px] bg-gold wave-bar" :class="{'running': isPlaying}"></div>
-        <div class="w-[2px] bg-gold wave-bar" style="animation-delay: 0.2s" :class="{'running': isPlaying}"></div>
-        <div class="w-[2px] bg-gold wave-bar" style="animation-delay: 0.4s" :class="{'running': isPlaying}"></div>
-        <div class="w-[2px] bg-gold wave-bar" style="animation-delay: 0.1s" :class="{'running': isPlaying}"></div>
+      <div class="ml-1">
+        <MusicWave :is-playing="isPlaying" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import MusicWave from './MusicWave.vue'
 
 const isPlaying = ref(false)
 const audioRef = ref(null)
+let fadeTimerId = null
+
+const targetVolume = 0.45
+
+const setDefaultVolume = () => {
+  if (!audioRef.value) return
+  audioRef.value.volume = targetVolume
+}
+
+const clearFadeTimer = () => {
+  if (fadeTimerId) {
+    window.clearInterval(fadeTimerId)
+    fadeTimerId = null
+  }
+}
+
+const fadeInAudio = (durationMs = 2500) => {
+  if (!audioRef.value) return
+
+  clearFadeTimer()
+  audioRef.value.volume = 0
+
+  const startTime = window.performance.now()
+  fadeTimerId = window.setInterval(() => {
+    if (!audioRef.value) {
+      clearFadeTimer()
+      return
+    }
+
+    const elapsed = window.performance.now() - startTime
+    const progress = Math.min(elapsed / durationMs, 1)
+    audioRef.value.volume = Math.min(targetVolume * progress, targetVolume)
+
+    if (progress >= 1) {
+      clearFadeTimer()
+      audioRef.value.volume = targetVolume
+    }
+  }, 50)
+}
+
+const playWithFade = () => {
+  if (!audioRef.value || isPlaying.value) return
+
+  setDefaultVolume()
+  audioRef.value.play().then(() => {
+    isPlaying.value = true
+    fadeInAudio()
+  }).catch((err) => {
+    console.warn('Audio playback was prevented by browser:', err)
+  })
+}
+
+const handleGlobalPlayRequest = () => {
+  playWithFade()
+}
 
 const togglePlay = () => {
   if (!audioRef.value) return
   
   if (isPlaying.value) {
+    clearFadeTimer()
     audioRef.value.pause()
     isPlaying.value = false
   } else {
-    audioRef.value.play().then(() => {
-      isPlaying.value = true
-    }).catch((err) => {
-      console.warn("Autoplay was prevented by browser:", err)
-      // Nút vẫn hiển thị trạng thái pause nếu lỗi
-    })
+    playWithFade()
   }
 }
+
+onMounted(() => {
+  setDefaultVolume()
+  window.addEventListener('wedding-music-play', handleGlobalPlayRequest)
+})
+
+onBeforeUnmount(() => {
+  clearFadeTimer()
+  window.removeEventListener('wedding-music-play', handleGlobalPlayRequest)
+})
+
+defineExpose({
+  playWithFade
+})
 </script>
 
 <style scoped>
-.wave-bar {
-  height: 20%;
-  border-radius: 2px;
-  animation: wave 0.8s ease-in-out infinite alternate;
-  animation-play-state: paused;
-  transform-origin: bottom;
+.song-label {
+  animation: song-float 1.8s ease-in-out infinite;
 }
 
-.wave-bar.running {
-  animation-play-state: running;
-}
-
-@keyframes wave {
-  0% {
-    height: 20%;
-  }
+@keyframes song-float {
+  0%,
   100% {
-    height: 100%;
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
   }
 }
 </style>
