@@ -97,6 +97,12 @@
 import { ref, onBeforeUnmount } from 'vue'
 
 const emit = defineEmits(['opened', 'music-requested'])
+const props = defineProps({
+  playMusic: {
+    type: Function,
+    default: null
+  }
+})
 
 const props = defineProps({
   guestName: {
@@ -115,7 +121,7 @@ const openEnvelope = () => {
   // 1. Kích hoạt animation lật nắp
   isOpening.value = true
   emit('music-requested')
-  window.dispatchEvent(new CustomEvent('wedding-music-play'))
+  props.playMusic?.()
 
   // 2. Sau khi nắp lật xong (1s), bắt đầu làm mờ toàn bộ component
   timers.push(window.setTimeout(() => {

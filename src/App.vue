@@ -1,8 +1,8 @@
 <template>
   <div class="relative isolate min-h-screen bg-ivory text-forest antialiased">
     <FernBackground />
-    <MusicBar />
-    <Envelope v-if="!showMainContent" :couple-name="coupleDisplay" :guest-name="guestName" @opened="showMainContent = true" />
+    <MusicBar ref="musicBarRef" />
+    <Envelope v-if="!showMainContent" :couple-name="coupleDisplay" :guest-name="guestName" :play-music="playInvitationMusic" @opened="showMainContent = true" />
 
     <Transition name="main-entrance">
       <div v-show="showMainContent" class="main-content-wrapper w-full">
@@ -317,6 +317,7 @@ const eventDate = new Date(params.get('date') || '2026-12-12T10:00:00+07:00')
 
 const now = ref(new Date())
 const showMainContent = ref(false)
+const musicBarRef = ref(null)
 let timerId
 
 onMounted(() => {
@@ -419,6 +420,10 @@ const gallery = [
 
 const rsvpHeading = computed(() => `Anh/Chị ${guestName}, vui lòng xác nhận tham dự`)
 const footerText = computed(() => `© 2026 ${brideName} & ${groomName} — Trân trọng cảm ơn`)
+
+const playInvitationMusic = () => {
+  musicBarRef.value?.playWithFade?.()
+}
 
 </script>
 
