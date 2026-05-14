@@ -310,8 +310,8 @@ import OurStory from './components/OurStory.vue'
 import ParallaxLeaves from './components/ParallaxLeaves/ParallaxLeaves.vue'
 
 const params = new URLSearchParams(window.location.search)
-const brideName = params.get('bride') || 'Minh Anh'
-const groomName = params.get('groom') || 'Quang Huy'
+const brideName = params.get('bride') || 'Văn A'
+const groomName = params.get('groom') || 'Thị B'
 const guestName = params.get('guest') || 'Quý khách'
 const eventDate = new Date(params.get('date') || '2026-12-12T10:00:00+07:00')
 
