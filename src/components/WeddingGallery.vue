@@ -78,10 +78,11 @@ const { registerReveal } = useRevealAnimation({ rootMargin: '0px 0px -12% 0px', 
 
 .wedding-gallery-subtitle {
   margin: 0.8rem auto 0;
-  max-width: 34rem;
+  max-width: 40rem;
   font-size: 0.98rem;
-  line-height: 1.8;
+  line-height: 1.72;
   color: rgba(26, 67, 49, 0.72);
+  text-wrap: pretty;
 }
 
 .wedding-gallery-grid {
@@ -169,4 +170,3 @@ const { registerReveal } = useRevealAnimation({ rootMargin: '0px 0px -12% 0px', 
   }
 }
 </style>
-

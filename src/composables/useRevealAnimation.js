@@ -1,4 +1,5 @@
 import { nextTick, onBeforeUnmount, onMounted } from 'vue'
+import { ENABLE_REVEAL_ANIMATION } from '../config/performance'
 
 const REVEAL_EASING = 'cubic-bezier(0.22, 1, 0.36, 1)'
 
@@ -11,6 +12,7 @@ export function useRevealAnimation(options = {}) {
   const elements = new Set()
   let observer = null
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const disableReveal = reducedMotion || !ENABLE_REVEAL_ANIMATION
 
   const makeVisible = (el) => {
     el.classList.add('is-visible')
@@ -21,7 +23,7 @@ export function useRevealAnimation(options = {}) {
     if (!el || elements.has(el)) return
     elements.add(el)
 
-    if (reducedMotion) {
+    if (disableReveal) {
       makeVisible(el)
       return
     }
@@ -33,7 +35,7 @@ export function useRevealAnimation(options = {}) {
 
   const refreshReveal = async () => {
     await nextTick()
-    if (reducedMotion) {
+    if (disableReveal) {
       elements.forEach((el) => makeVisible(el))
       return
     }
@@ -44,7 +46,7 @@ export function useRevealAnimation(options = {}) {
   }
 
   onMounted(() => {
-    if (reducedMotion) {
+    if (disableReveal) {
       elements.forEach((el) => makeVisible(el))
       return
     }
@@ -77,4 +79,3 @@ export function useRevealAnimation(options = {}) {
     REVEAL_EASING
   }
 }
-

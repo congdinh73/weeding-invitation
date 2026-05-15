@@ -98,8 +98,7 @@ body::before {
 }
 
 .parallax-leaf {
-	will-change: transform;
-	transition: transform 0.2s ease-out;
+	transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 	transform-origin: center;
 }
 
@@ -107,7 +106,6 @@ body::before {
 	animation-name: leaf-fall;
 	animation-iteration-count: infinite;
 	animation-timing-function: linear;
-	will-change: transform;
 }
 
 @keyframes leaf-fall {
@@ -120,7 +118,7 @@ body::before {
 	}
 	50% {
 		transform: translate3d(calc(var(--sway, 0px) * 0.5), 56vh, 0) rotate(180deg);
-		opacity: 0.95;
+		opacity: 0.9;
 	}
 	100% {
 		transform: translate3d(var(--sway, 0px), 122vh, 0) rotate(360deg);
@@ -197,7 +195,6 @@ body::before {
 	transition-property: opacity, transform;
 	transition-duration: 900ms;
 	transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-	will-change: opacity, transform;
 }
 
 .reveal {

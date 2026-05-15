@@ -77,7 +77,7 @@
       >
         <button
           type="button"
-          class="inline-flex items-center justify-center rounded-full border border-[#1A4331] bg-transparent px-10 py-3.5 font-serif text-sm uppercase tracking-[0.25em] text-[#1A4331] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#1A4331] hover:text-white hover:shadow-[0_12px_24px_-10px_rgba(26,67,49,0.45)] disabled:cursor-not-allowed disabled:opacity-50"
+          class="inline-flex items-center justify-center rounded-full border border-[#1A4331] bg-transparent px-10 py-3.5 font-serif text-sm uppercase tracking-[0.25em] text-[#1A4331] transition-[transform,background-color,color,box-shadow] duration-300 hover:-translate-y-0.5 hover:bg-[#1A4331] hover:text-white hover:shadow-[0_12px_24px_-10px_rgba(26,67,49,0.45)] disabled:cursor-not-allowed disabled:opacity-50"
           :disabled="isOpening"
           @click="openEnvelope"
         >

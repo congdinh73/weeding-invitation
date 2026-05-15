@@ -1,131 +1,131 @@
 {
-  "fpsLimit": 28,
-  "fullScreen": {
-    "enable": false,
-    "zIndex": 0
-  },
-  "background": {
-    "color": {
-      "value": "transparent"
-    }
-  },
-  "detectRetina": true,
-  "interactivity": {
-    "events": {
-      "onClick": {
-        "enable": false
-      },
-      "onHover": {
-        "enable": false
-      },
-      "resize": true
-    }
-  },
-  "particles": {
-    "number": {
-      "value": 0,
-      "density": {
-        "enable": true,
-        "area": 1200
-      }
-    },
-    "shape": {
-      "type": "image",
-      "options": {
-        "image": {
-          "src": "/forest-leaf.svg",
-          "width": 24,
-          "height": 32,
-          "replaceColor": false
-        }
-      }
-    },
-    "color": {
-      "value": [
-        "#F7FBF8",
-        "#E8F3ED"
-      ]
-    },
-    "opacity": {
-      "value": {
-        "min": 0.1,
-        "max": 0.3
-      },
-      "random": true,
-      "animation": {
-        "enable": true,
-        "speed": 0.18,
-        "sync": false,
-        "startValue": "random"
-      }
-    },
-    "size": {
-      "value": {
-        "min": 10,
-        "max": 20
-      },
-      "random": true
-    },
-    "wobble": {
-      "enable": true,
-      "distance": {
-        "min": 6,
-        "max": 12
-      },
-      "speed": {
-        "min": 0.8,
-        "max": 1.6
-      },
-      "move": true
-    },
-    "rotate": {
-      "value": {
-        "min": 0,
-        "max": 360
-      },
-      "random": true,
-      "animation": {
-        "enable": true,
-        "speed": 1.25,
-        "sync": false
-      }
-    },
-    "move": {
-      "enable": true,
-      "direction": "bottom-right",
-      "speed": 2.2,
-      "random": true,
-      "straight": false,
-      "drift": {
-        "min": -0.8,
-        "max": 0.8
-      },
-      "outModes": {
-        "default": "out"
-      },
-      "vibrate": true
-    }
-  },
-  "emitters": {
-    "direction": "bottom",
-    "life": {
-      "count": 0,
-      "duration": 0.1,
-      "delay": 0.12
-    },
-    "rate": {
-      "delay": 0.22,
-      "quantity": 3
-    },
-    "startCount": 176,
-    "position": {
-      "x": 50,
-      "y": 0
-    },
-    "size": {
-      "width": 100,
-      "height": 0,
-      "mode": "percent"
-    }
-  }
+    "fpsLimit":  20,
+    "fullScreen":  {
+                       "enable":  false,
+                       "zIndex":  0
+                   },
+    "background":  {
+                       "color":  {
+                                     "value":  "transparent"
+                                 }
+                   },
+    "detectRetina":  false,
+    "interactivity":  {
+                          "events":  {
+                                         "onClick":  {
+                                                         "enable":  false
+                                                     },
+                                         "onHover":  {
+                                                         "enable":  false
+                                                     },
+                                         "resize":  true
+                                     }
+                      },
+    "particles":  {
+                      "number":  {
+                                     "value":  0,
+                                     "density":  {
+                                                     "enable":  true,
+                                                     "area":  1200
+                                                 }
+                                 },
+                      "shape":  {
+                                    "type":  "image",
+                                    "options":  {
+                                                    "image":  {
+                                                                  "src":  "/forest-leaf.svg",
+                                                                  "width":  24,
+                                                                  "height":  32,
+                                                                  "replaceColor":  false
+                                                              }
+                                                }
+                                },
+                      "color":  {
+                                    "value":  [
+                                                  "#F7FBF8",
+                                                  "#E8F3ED"
+                                              ]
+                                },
+                      "opacity":  {
+                                      "value":  {
+                                                    "min":  0.1,
+                                                    "max":  0.3
+                                                },
+                                      "random":  true,
+                                      "animation":  {
+                                                        "enable":  true,
+                                                        "speed":  0.08,
+                                                        "sync":  false,
+                                                        "startValue":  "random"
+                                                    }
+                                  },
+                      "size":  {
+                                   "value":  {
+                                                 "min":  10,
+                                                 "max":  20
+                                             },
+                                   "random":  true
+                               },
+                      "wobble":  {
+                                     "enable":  true,
+                                     "distance":  {
+                                                      "min":  2,
+                                                      "max":  6
+                                                  },
+                                     "speed":  {
+                                                   "min":  0.35,
+                                                   "max":  0.8
+                                               },
+                                     "move":  true
+                                 },
+                      "rotate":  {
+                                     "value":  {
+                                                   "min":  0,
+                                                   "max":  360
+                                               },
+                                     "random":  true,
+                                     "animation":  {
+                                                       "enable":  true,
+                                                       "speed":  0.35,
+                                                       "sync":  false
+                                                   }
+                                 },
+                      "move":  {
+                                   "enable":  true,
+                                   "direction":  "bottom-right",
+                                   "speed":  0.75,
+                                   "random":  true,
+                                   "straight":  false,
+                                   "drift":  {
+                                                 "min":  -0.35,
+                                                 "max":  0.35
+                                             },
+                                   "outModes":  {
+                                                    "default":  "out"
+                                                },
+                                   "vibrate":  true
+                               }
+                  },
+    "emitters":  {
+                     "direction":  "bottom",
+                     "life":  {
+                                  "count":  0,
+                                  "duration":  0.1,
+                                  "delay":  0.12
+                              },
+                     "rate":  {
+                                  "delay":  0.48,
+                                  "quantity":  1
+                              },
+                     "startCount":  48,
+                     "position":  {
+                                      "x":  50,
+                                      "y":  0
+                                  },
+                     "size":  {
+                                  "width":  100,
+                                  "height":  0,
+                                  "mode":  "percent"
+                              }
+                 }
 }
