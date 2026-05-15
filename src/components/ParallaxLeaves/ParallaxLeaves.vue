@@ -92,8 +92,10 @@ let targetY = 0
 let currentX = 0
 let currentY = 0
 let frameId = 0
+let isActive = false
 let resizeHandler
 let moveHandler
+let visibilityHandler
 
 const randomBetween = (min, max) => min + Math.random() * (max - min)
 
@@ -108,10 +110,26 @@ const updateRootVars = () => {
 }
 
 const animate = () => {
+  if (!isActive) return
   currentX += (targetX - currentX) * 0.024
   currentY += (targetY - currentY) * 0.024
   updateRootVars()
   frameId = window.requestAnimationFrame(animate)
+}
+
+const startAnimation = () => {
+  if (isActive) return
+  isActive = true
+  frameId = window.requestAnimationFrame(animate)
+}
+
+const stopAnimation = () => {
+  if (!isActive) return
+  isActive = false
+  if (frameId) {
+    window.cancelAnimationFrame(frameId)
+    frameId = 0
+  }
 }
 
 const handleMove = event => {
@@ -125,6 +143,14 @@ const handleMove = event => {
 const handleResize = () => {
   targetX = 0
   targetY = 0
+}
+
+const handleVisibilityChange = () => {
+  if (document.hidden) {
+    stopAnimation()
+  } else {
+    startAnimation()
+  }
 }
 
 const leafStyle = leaf => ({
@@ -152,8 +178,10 @@ onMounted(() => {
   window.addEventListener('mouseleave', handleResize, { passive: true })
   window.addEventListener('blur', handleResize)
   window.addEventListener('resize', resizeHandler, { passive: true })
+  visibilityHandler = handleVisibilityChange
+  document.addEventListener('visibilitychange', visibilityHandler)
 
-  animate()
+  startAnimation()
 })
 
 onBeforeUnmount(() => {
@@ -161,9 +189,7 @@ onBeforeUnmount(() => {
   window.removeEventListener('mouseleave', handleResize)
   window.removeEventListener('blur', handleResize)
   window.removeEventListener('resize', resizeHandler)
-
-  if (frameId) {
-    window.cancelAnimationFrame(frameId)
-  }
+  document.removeEventListener('visibilitychange', visibilityHandler)
+  stopAnimation()
 })
 </script>

@@ -5,9 +5,9 @@
     <Envelope v-if="!showMainContent" :couple-name="coupleDisplay" :guest-name="guestName" :play-music="playInvitationMusic" @opened="showMainContent = true" />
 
     <Transition name="main-entrance">
-      <div v-show="showMainContent" class="main-content-wrapper w-full">
-        <ForestBackground v-show="showMainContent" />
-    <ParallaxLeaves v-show="showMainContent" />
+      <div v-if="showMainContent" class="main-content-wrapper w-full">
+        <ForestBackground />
+    <ParallaxLeaves />
     <div class="pointer-events-none fixed left-4 top-1/2 z-20 hidden -translate-y-1/2 xl:block">
       <div class="flex flex-col items-center gap-3">
         <div class="h-28 w-px bg-gradient-to-b from-transparent via-gold/70 to-transparent"></div>
@@ -33,7 +33,7 @@
       </div>
     </header>
 
-    <main v-show="showMainContent" class="relative z-10">
+    <main class="relative z-10">
       <section class="hero-stage relative overflow-hidden pt-3 sm:pt-4 lg:pt-0">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(26,67,49,0.16),_transparent_36%),linear-gradient(180deg,#fff 0%,#f7fbf8 100%)]"></div>
         <div class="absolute inset-0 opacity-40 leaf-pattern"></div>
@@ -137,7 +137,8 @@
         </div>
       </section>
 
-      <OurStory />
+      <div ref="ourStorySentinel" class="h-px w-full" aria-hidden="true"></div>
+      <OurStory v-if="shouldRenderOurStory" />
 
       <section id="invitation" class="bg-white">
         <div class="invitation-panel mx-auto w-full max-w-4xl px-4 py-14 text-center sm:px-6 lg:px-8 lg:py-20">
@@ -301,13 +302,44 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import Envelope from './components/Envelope/Envelope.vue'
-import ForestBackground from './components/ForestBackground/ForestBackground.vue'
-import FernBackground from './components/FernBackground.vue'
-import MusicBar from './components/MusicBar.vue'
-import OurStory from './components/OurStory.vue'
-import ParallaxLeaves from './components/ParallaxLeaves/ParallaxLeaves.vue'
+import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+
+const loadEnvelopeComponent = () => import('./components/Envelope/Envelope.vue')
+const loadMusicBarComponent = () => import('./components/MusicBar.vue')
+const loadFernBackgroundComponent = () => import('./components/FernBackground.vue')
+const loadForestBackgroundComponent = () => import('./components/ForestBackground/ForestBackground.vue')
+const loadParallaxLeavesComponent = () => import('./components/ParallaxLeaves/ParallaxLeaves.vue')
+const loadOurStoryComponent = () => import('./components/OurStory.vue')
+
+const Envelope = defineAsyncComponent({
+  loader: loadEnvelopeComponent,
+  suspensible: false
+})
+
+const MusicBar = defineAsyncComponent({
+  loader: loadMusicBarComponent,
+  suspensible: false
+})
+
+const FernBackground = defineAsyncComponent({
+  loader: loadFernBackgroundComponent,
+  suspensible: false
+})
+
+const ForestBackground = defineAsyncComponent({
+  loader: loadForestBackgroundComponent,
+  suspensible: false
+})
+
+const ParallaxLeaves = defineAsyncComponent({
+  loader: loadParallaxLeavesComponent,
+  suspensible: false
+})
+
+const OurStory = defineAsyncComponent({
+  loader: loadOurStoryComponent,
+  suspensible: false
+})
 
 const params = new URLSearchParams(window.location.search)
 const brideName = params.get('bride') || 'Văn A'
@@ -317,23 +349,76 @@ const eventDate = new Date(params.get('date') || '2026-12-12T10:00:00+07:00')
 
 const now = ref(new Date())
 const showMainContent = ref(false)
+const shouldRenderOurStory = ref(false)
 const musicBarRef = ref(null)
+const ourStorySentinel = ref(null)
 let timerId
+let parallaxFrameId = 0
+let isParallaxActive = false
+let ourStoryObserver = null
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const supportsFinePointer = window.matchMedia('(pointer: fine)').matches
+
+const initOurStoryObserver = async () => {
+  if (shouldRenderOurStory.value || ourStoryObserver || !showMainContent.value) return
+  await nextTick()
+  const sentinel = ourStorySentinel.value
+  if (!sentinel) return
+
+  if (!('IntersectionObserver' in window)) {
+    shouldRenderOurStory.value = true
+    return
+  }
+
+  ourStoryObserver = new IntersectionObserver((entries) => {
+    if (!entries[0]?.isIntersecting) return
+    shouldRenderOurStory.value = true
+    ourStoryObserver?.disconnect()
+    ourStoryObserver = null
+  }, {
+    rootMargin: '500px 0px'
+  })
+
+  ourStoryObserver.observe(sentinel)
+}
 
 onMounted(() => {
-  timerId = window.setInterval(() => {
-    now.value = new Date()
-  }, 1000)
+  const preloadMainChunks = () => {
+    void Promise.all([
+      loadFernBackgroundComponent(),
+      loadForestBackgroundComponent(),
+      loadParallaxLeavesComponent(),
+      loadOurStoryComponent(),
+      loadMusicBarComponent()
+    ])
+  }
 
-  // Bắt đầu vòng lặp Parallax
-  window.addEventListener('mousemove', onMouseMove)
-  requestAnimationFrame(parallaxLoop)
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(preloadMainChunks, { timeout: 1500 })
+  } else {
+    window.setTimeout(preloadMainChunks, 1200)
+  }
+
+  void initOurStoryObserver()
 })
 
 onBeforeUnmount(() => {
   window.clearInterval(timerId)
-  window.removeEventListener('mousemove', onMouseMove)
+  stopParallax()
+  ourStoryObserver?.disconnect()
+  ourStoryObserver = null
 })
+
+watch(showMainContent, (isVisible) => {
+  if (isVisible) {
+    void initOurStoryObserver()
+  }
+  if (!isVisible || timerId) return
+  now.value = new Date()
+  timerId = window.setInterval(() => {
+    now.value = new Date()
+  }, 1000)
+}, { immediate: true })
 
 // Logic Parallax
 let targetX = 0
@@ -346,7 +431,25 @@ const onMouseMove = (e) => {
   targetY = ((e.clientY / window.innerHeight) * 2 - 1) * 0.58
 }
 
+const startParallax = () => {
+  if (isParallaxActive || prefersReducedMotion || !supportsFinePointer) return
+  isParallaxActive = true
+  window.addEventListener('mousemove', onMouseMove, { passive: true })
+  parallaxFrameId = window.requestAnimationFrame(parallaxLoop)
+}
+
+const stopParallax = () => {
+  if (!isParallaxActive) return
+  isParallaxActive = false
+  window.removeEventListener('mousemove', onMouseMove)
+  if (parallaxFrameId) {
+    window.cancelAnimationFrame(parallaxFrameId)
+    parallaxFrameId = 0
+  }
+}
+
 const parallaxLoop = () => {
+  if (!isParallaxActive) return
   currentX += (targetX - currentX) * 0.022
   currentY += (targetY - currentY) * 0.022
   
@@ -355,7 +458,7 @@ const parallaxLoop = () => {
     document.documentElement.style.setProperty('--mouse-y', currentY.toFixed(4))
   }
   
-  requestAnimationFrame(parallaxLoop)
+  parallaxFrameId = window.requestAnimationFrame(parallaxLoop)
 }
 
 const coupleDisplay = computed(() => `${brideName} & ${groomName}`)
@@ -421,8 +524,13 @@ const gallery = [
 const rsvpHeading = computed(() => `Anh/Chị ${guestName}, vui lòng xác nhận tham dự`)
 const footerText = computed(() => `© 2026 ${brideName} & ${groomName} — Trân trọng cảm ơn`)
 
-const playInvitationMusic = () => {
+const playInvitationMusic = async () => {
+  if (!musicBarRef.value) {
+    await loadMusicBarComponent()
+    await nextTick()
+  }
   musicBarRef.value?.playWithFade?.()
+  startParallax()
 }
 
 </script>
@@ -556,3 +664,4 @@ const playInvitationMusic = () => {
   will-change: transform, opacity;
 }
 </style>
+

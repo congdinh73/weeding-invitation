@@ -89,31 +89,23 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 import ParallaxLeaves from '../ParallaxLeaves/ParallaxLeaves.vue'
 
-const emit = defineEmits(['opened', 'music-requested'])
+const emit = defineEmits(['opened'])
 
 const props = defineProps({
-  playMusic: { type: Function, default: null },
-  guestName: { type: String, default: 'Anh/Chị' }
+  playMusic: { type: Function, default: null }
 })
 
 const isOpening = ref(false)
 const isFading = ref(false)
 const timers = []
 
-const displayGuestName = computed(() => {
-  if (props.guestName && props.guestName.trim()) return props.guestName
-  const params = new URLSearchParams(window.location.search)
-  return params.get('guest') || params.get('name') || 'Anh/Chị'
-})
-
 const openEnvelope = () => {
   if (isOpening.value) return
 
   isOpening.value = true
-  emit('music-requested')
   props.playMusic?.()
 
   timers.push(
@@ -135,8 +127,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
-
 .font-serif {
   font-family: 'Playfair Display', serif;
 }

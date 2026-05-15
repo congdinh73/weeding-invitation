@@ -52,9 +52,8 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;700&display=swap');
-
 .font-dancing {
   font-family: 'Dancing Script', cursive;
 }
 </style>
+
