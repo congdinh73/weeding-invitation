@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="relative isolate min-h-screen bg-ivory text-forest antialiased">
     <FernBackground />
     <MusicBar ref="musicBarRef" />
@@ -39,40 +39,35 @@
         <div class="absolute inset-0 opacity-40 leaf-pattern"></div>
 
         <div class="relative mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:px-8 lg:py-20">
-          <div class="order-2 flex flex-col justify-center gap-7 text-center lg:order-1 lg:text-left">
-            <div class="stagger-item inline-flex self-center rounded-full border border-gold/40 bg-white/75 px-4 py-2 text-[0.65rem] uppercase tracking-[0.35em] text-forest/70 shadow-soft lg:self-start" style="--stagger-index: 1">
-              Thân mời
-            </div>
-
-            <div class="stagger-item mx-auto flex w-full max-w-xs items-center justify-center gap-3 lg:mx-0 lg:justify-start" style="--stagger-index: 2">
-              <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/70 to-transparent"></span>
-              <span class="rounded-full border border-gold/35 bg-white/80 px-3 py-1 text-[0.62rem] uppercase tracking-[0.38em] text-forest/60 shadow-soft backdrop-blur">
-                Một ngày để nhớ
-              </span>
-              <span class="h-px flex-1 bg-gradient-to-r from-transparent via-gold/70 to-transparent"></span>
+          <div class="order-2 flex flex-col justify-center gap-9 text-center lg:order-1 lg:gap-10 lg:text-left">
+            <div class="stagger-item inline-flex self-center rounded-full border border-gold/35 bg-white/72 px-4 py-2 text-[0.62rem] uppercase tracking-[0.38em] text-forest/66 shadow-soft lg:self-start" style="--stagger-index: 1">
+              Save the date
             </div>
 
             <div class="stagger-item space-y-3" style="--stagger-index: 3">
-              <p class="text-sm uppercase tracking-[0.35em] text-forest/55">{{ weddingDateLabel }}</p>
-              <h1 class="luxury-stroke-title font-serif text-4xl leading-[1.02] text-forest sm:text-5xl lg:text-7xl">{{ brideName }} &amp; {{ groomName }}</h1>
-              <p class="hero-copy mx-auto max-w-xl text-base leading-8 text-forest/75 lg:mx-0 lg:text-lg">
-                Chúng tôi trân trọng kính mời gia đình và bạn bè đến chung vui trong ngày cưới. Một buổi gặp gỡ ấm áp, giản dị và tinh tế, được chuẩn bị bằng tất cả tình yêu.
+              <p class="hero-date text-[0.68rem] uppercase tracking-[0.42em] text-forest/52">{{ weddingDateLabel }}</p>
+              <h1 class="luxury-stroke-title font-serif text-[2.65rem] leading-[0.98] text-forest sm:text-6xl lg:text-[5.15rem]">{{ brideName }} &amp; {{ groomName }}</h1>
+              <p class="hero-copy mx-auto max-w-xl text-base text-forest/74 lg:mx-0 lg:text-lg">
+                Rất mong được gặp bạn<br class="hidden sm:block" />
+                trong ngày đặc biệt của chúng mình.
               </p>
             </div>
 
             <div class="stagger-item flex flex-wrap items-center justify-center gap-3 lg:justify-start" style="--stagger-index: 4">
-              <a href="#rsvp" class="inline-flex items-center justify-center rounded-full bg-forest px-6 py-3 text-sm font-medium text-white shadow-soft transition duration-300 hover:-translate-y-0.5 hover:bg-forest-strong">
+              <a href="#rsvp" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
                 Xác nhận tham dự
               </a>
-              <a href="#events" class="inline-flex items-center justify-center rounded-full border border-forest/15 bg-white/75 px-6 py-3 text-sm font-medium text-forest transition duration-300 hover:border-gold hover:text-gold">
+              <a href="#events" class="hero-btn hero-btn--secondary inline-flex h-11 items-center justify-center rounded-full border px-7 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-forest transition duration-300">
                 Xem lịch trình
               </a>
             </div>
 
-            <div class="stagger-item grid grid-cols-4 gap-3 sm:max-w-xl" style="--stagger-index: 5">
-              <div v-for="(box, index) in countdownBoxes" :key="box.label" class="rounded-3xl border border-white/30 bg-white/80 p-3 text-center shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] backdrop-blur-lg" :style="`transform: translate3d(calc(var(--mouse-x, 0) * -${5 + index*1.5}px), calc(var(--mouse-y, 0) * -${5 + index*1.5}px), 0); will-change: transform;`">
-                <p class="font-serif text-2xl text-forest sm:text-3xl">{{ box.value }}</p>
-                <p class="mt-1 text-[0.65rem] uppercase tracking-[0.25em] text-forest/55">{{ box.label }}</p>
+            <div class="stagger-item hero-countdown-editorial mt-2" style="--stagger-index: 5">
+              <div class="hero-countdown-editorial__row">
+                <span v-for="box in countdownBoxes" :key="`value-${box.label}`" class="hero-countdown-editorial__value">{{ box.value }}</span>
+              </div>
+              <div class="hero-countdown-editorial__row hero-countdown-editorial__row--labels">
+                <span v-for="box in countdownBoxes" :key="`label-${box.label}`" class="hero-countdown-editorial__label">{{ box.label }}</span>
               </div>
             </div>
           </div>
@@ -81,7 +76,7 @@
             <div class="absolute -right-4 top-6 hidden h-28 w-28 rounded-full border border-gold/30 lg:block"></div>
             <div class="absolute -left-5 bottom-10 hidden h-20 w-20 rounded-full border border-forest/15 lg:block"></div>
 
-            <div class="stagger-item hero-card relative w-full max-w-md overflow-hidden rounded-3xl border border-forest/10 bg-white/85 backdrop-blur-md shadow-2xl" style="--stagger-index: 2; transform: translate3d(calc(var(--mouse-x, 0) * -10px), calc(var(--mouse-y, 0) * -10px), 0); will-change: transform;">
+            <div class="stagger-item hero-card relative w-full max-w-md overflow-hidden rounded-3xl border border-forest/10 bg-white/85 backdrop-blur-md shadow-2xl" style="--stagger-index: 2;">
               <div class="absolute inset-[1px] rounded-[1.4rem] border border-white/70"></div>
               <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0)_0%,rgba(255,255,255,0.1)_40%,rgba(26,67,49,0.06)_100%)]"></div>
               <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.12),transparent_24%),radial-gradient(circle_at_80%_30%,rgba(26,67,49,0.1),transparent_28%)]"></div>
@@ -94,11 +89,11 @@
 
               <div class="relative flex flex-col gap-6 p-8">
                 <div class="flex items-center justify-between gap-3">
-                  <div class="premium-chip rounded-full border border-white/70 bg-white/75 px-3 py-1 text-[0.62rem] uppercase tracking-[0.32em] text-[#1A4331] backdrop-blur font-medium">
+                  <div class="premium-chip rounded-full border border-white/70 bg-white/72 px-3 py-1 text-[0.62rem] uppercase tracking-[0.32em] text-[#1A4331] backdrop-blur font-medium">
                     Save the date
                   </div>
-                  <div class="hidden rounded-full border border-gold/35 bg-white/75 px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-gold backdrop-blur sm:block font-medium">
-                    Minimal luxury
+                  <div class="hidden rounded-full border border-gold/35 bg-white/72 px-3 py-1 text-[0.6rem] uppercase tracking-[0.3em] text-gold backdrop-blur sm:block font-medium">
+                    Forever starts here
                   </div>
                 </div>
 
@@ -119,17 +114,18 @@
                   </div>
                 </div>
 
-                <div class="rounded-2xl border border-white/60 bg-white/70 p-5 backdrop-blur-md flex flex-col gap-2 shadow-sm">
-                  <p class="font-script text-3xl text-gold">Thân mời</p>
-                  
-                  <div class="flex items-center justify-between mt-1">
-                    <p class="font-serif text-2xl text-[#1A4331]">Ảnh cặp đôi</p>
-                    <div class="rounded-full border border-[#1A4331]/20 px-3 py-1.5 text-[0.65rem] uppercase tracking-widest text-[#1A4331] bg-white/60 font-medium">
-                      Việt Nam
-                    </div>
+                <div class="editorial-invite-panel rounded-[1.7rem] border border-white/65 bg-[#fffdf9]/84 p-6 backdrop-blur-md flex flex-col gap-3 shadow-sm">
+                  <p class="editorial-kicker-inline text-[0.62rem] uppercase text-[#1A4331]/56">With Love</p>
+
+                  <div class="space-y-1">
+                    <p class="editorial-invite-line font-serif text-[2rem] leading-[1.06] text-[#1A4331] sm:text-[2.2rem]">Khoảnh khắc này</p>
+                    <p class="editorial-invite-line font-serif text-[2rem] leading-[1.06] text-[#1A4331] sm:text-[2.2rem]">sẽ trọn vẹn hơn</p>
+                    <p class="editorial-invite-line font-serif text-[2rem] leading-[1.06] text-[#1A4331] sm:text-[2.2rem]">khi có bạn.</p>
                   </div>
-                  
-                  <p class="text-sm uppercase tracking-normal font-normal text-[#1A4331]/80 mt-1">Trang phục áo dài • Tông tự nhiên</p>
+
+                  <p class="editorial-location mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#1A4331]/64">
+                    Sài Gòn, Việt Nam
+                  </p>
                 </div>
               </div>
             </div>
@@ -137,8 +133,7 @@
         </div>
       </section>
 
-      <div ref="ourStorySentinel" class="h-px w-full" aria-hidden="true"></div>
-      <OurStory v-if="shouldRenderOurStory" />
+      <LoveStoryTimeline />
 
       <section id="invitation" class="bg-white">
         <div class="invitation-panel mx-auto w-full max-w-4xl px-4 py-14 text-center sm:px-6 lg:px-8 lg:py-20">
@@ -158,85 +153,9 @@
         </div>
       </section>
 
-      <section id="events" class="bg-ivory/75">
-        <div class="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div class="flex flex-col gap-3 text-center">
-            <p class="editorial-kicker text-[0.7rem] uppercase tracking-[0.45em] text-forest/50">Sự kiện</p>
-            <h2 class="editorial-title font-serif text-3xl text-forest sm:text-4xl">Lịch trình ngày cưới</h2>
-          </div>
+      <WeddingInfo />
 
-          <div class="mt-10 grid gap-4 lg:grid-cols-3">
-            <article v-for="(event, index) in events" :key="event.title" class="rounded-3xl border border-white/30 bg-white/80 p-6 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)] backdrop-blur-lg" :style="`transform: translate3d(calc(var(--mouse-x, 0) * -${7 + index*2}px), calc(var(--mouse-y, 0) * -${7 + index*2}px), 0); will-change: transform;`">
-              <div class="flex items-center justify-between gap-4">
-                <div>
-                  <p class="text-[0.68rem] uppercase tracking-[0.35em] text-forest/50">{{ event.tag }}</p>
-                  <h3 class="mt-2 font-serif text-2xl text-forest">{{ event.title }}</h3>
-                </div>
-                <div class="rounded-full border border-gold/35 bg-gold/8 p-3 text-gold">
-                  <span class="text-lg">✦</span>
-                </div>
-              </div>
-
-              <dl class="mt-6 space-y-4 text-sm text-forest/75">
-                <div class="flex items-start gap-3">
-                  <dt class="mt-0.5 w-16 shrink-0 text-forest/45">Thời gian</dt>
-                  <dd class="font-medium text-forest">{{ event.time }}</dd>
-                </div>
-                <div class="flex items-start gap-3">
-                  <dt class="mt-0.5 w-16 shrink-0 text-forest/45">Địa điểm</dt>
-                  <dd class="font-medium text-forest">{{ event.address }}</dd>
-                </div>
-                <div class="flex items-start gap-3">
-                  <dt class="mt-0.5 w-16 shrink-0 text-forest/45">Ghi chú</dt>
-                  <dd class="text-forest/70">{{ event.note }}</dd>
-                </div>
-              </dl>
-
-              <div v-if="event.map" class="mt-6 overflow-hidden rounded-[1.3rem] border border-forest/10 bg-forest/5">
-                <div class="map-preview relative aspect-[16/10]">
-                  <div class="absolute inset-0 opacity-70 map-grid"></div>
-                  <div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full border border-gold/60 bg-white text-gold shadow-soft">⌁</div>
-                    <div class="rounded-full border border-white/70 bg-white/85 px-3 py-1 text-[0.62rem] uppercase tracking-[0.3em] text-forest/65">
-                      Bản đồ
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section id="gallery" class="bg-white">
-        <div class="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div class="flex flex-col gap-3 text-center">
-            <p class="text-[0.7rem] uppercase tracking-[0.45em] text-forest/50">Bộ sưu tập</p>
-            <h2 class="font-serif text-3xl text-forest sm:text-4xl">Khoảnh khắc dịu dàng</h2>
-          </div>
-
-          <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <figure
-              v-for="(photo, index) in gallery"
-              :key="photo.label"
-              :class="[
-                'group overflow-hidden rounded-3xl border border-white/30 bg-white/80 backdrop-blur-lg shadow-[0_20px_50px_-10px_rgba(0,0,0,0.15)]',
-                index === 0 ? 'sm:col-span-2 sm:row-span-2 aspect-[1.2/1]' : 'aspect-[0.92/1.08]'
-              ]"
-              :style="`transform: translate3d(calc(var(--mouse-x, 0) * -${6 + (index%2)*3}px), calc(var(--mouse-y, 0) * -${6 + (index%2)*3}px), 0); will-change: transform;`"
-            >
-              <div class="relative h-full w-full photo-frame" :class="photo.tone">
-                  <div class="absolute inset-0 opacity-25 photo-grain"></div>
-                <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_25%,rgba(255,255,255,0.38),transparent_28%),linear-gradient(180deg,rgba(26,67,49,0.04),rgba(26,67,49,0.18))]"></div>
-                <div class="absolute inset-x-4 bottom-4 rounded-2xl border border-white/60 bg-white/55 px-4 py-3 backdrop-blur-sm transition duration-300 group-hover:-translate-y-0.5">
-                  <p class="text-[0.65rem] uppercase tracking-[0.3em] text-forest/55">{{ photo.label }}</p>
-                  <p class="mt-1 font-serif text-xl text-forest">{{ photo.caption }}</p>
-                </div>
-              </div>
-            </figure>
-          </div>
-        </div>
-      </section>
+      <WeddingGallery />
 
       <section id="rsvp" class="bg-ivory/65">
         <div class="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
@@ -309,7 +228,9 @@ const loadMusicBarComponent = () => import('./components/MusicBar.vue')
 const loadFernBackgroundComponent = () => import('./components/FernBackground.vue')
 const loadForestBackgroundComponent = () => import('./components/ForestBackground/ForestBackground.vue')
 const loadParallaxLeavesComponent = () => import('./components/ParallaxLeaves/ParallaxLeaves.vue')
-const loadOurStoryComponent = () => import('./components/OurStory.vue')
+const loadLoveStoryTimelineComponent = () => import('./components/LoveStoryTimeline.vue')
+const loadWeddingInfoComponent = () => import('./components/WeddingInfo.vue')
+const loadWeddingGalleryComponent = () => import('./components/WeddingGallery.vue')
 
 const Envelope = defineAsyncComponent({
   loader: loadEnvelopeComponent,
@@ -336,8 +257,18 @@ const ParallaxLeaves = defineAsyncComponent({
   suspensible: false
 })
 
-const OurStory = defineAsyncComponent({
-  loader: loadOurStoryComponent,
+const LoveStoryTimeline = defineAsyncComponent({
+  loader: loadLoveStoryTimelineComponent,
+  suspensible: false
+})
+
+const WeddingInfo = defineAsyncComponent({
+  loader: loadWeddingInfoComponent,
+  suspensible: false
+})
+
+const WeddingGallery = defineAsyncComponent({
+  loader: loadWeddingGalleryComponent,
   suspensible: false
 })
 
@@ -349,38 +280,12 @@ const eventDate = new Date(params.get('date') || '2026-12-12T10:00:00+07:00')
 
 const now = ref(new Date())
 const showMainContent = ref(false)
-const shouldRenderOurStory = ref(false)
 const musicBarRef = ref(null)
-const ourStorySentinel = ref(null)
 let timerId
 let parallaxFrameId = 0
 let isParallaxActive = false
-let ourStoryObserver = null
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const supportsFinePointer = window.matchMedia('(pointer: fine)').matches
-
-const initOurStoryObserver = async () => {
-  if (shouldRenderOurStory.value || ourStoryObserver || !showMainContent.value) return
-  await nextTick()
-  const sentinel = ourStorySentinel.value
-  if (!sentinel) return
-
-  if (!('IntersectionObserver' in window)) {
-    shouldRenderOurStory.value = true
-    return
-  }
-
-  ourStoryObserver = new IntersectionObserver((entries) => {
-    if (!entries[0]?.isIntersecting) return
-    shouldRenderOurStory.value = true
-    ourStoryObserver?.disconnect()
-    ourStoryObserver = null
-  }, {
-    rootMargin: '500px 0px'
-  })
-
-  ourStoryObserver.observe(sentinel)
-}
 
 onMounted(() => {
   const preloadMainChunks = () => {
@@ -388,7 +293,9 @@ onMounted(() => {
       loadFernBackgroundComponent(),
       loadForestBackgroundComponent(),
       loadParallaxLeavesComponent(),
-      loadOurStoryComponent(),
+      loadLoveStoryTimelineComponent(),
+      loadWeddingInfoComponent(),
+      loadWeddingGalleryComponent(),
       loadMusicBarComponent()
     ])
   }
@@ -398,21 +305,14 @@ onMounted(() => {
   } else {
     window.setTimeout(preloadMainChunks, 1200)
   }
-
-  void initOurStoryObserver()
 })
 
 onBeforeUnmount(() => {
   window.clearInterval(timerId)
   stopParallax()
-  ourStoryObserver?.disconnect()
-  ourStoryObserver = null
 })
 
 watch(showMainContent, (isVisible) => {
-  if (isVisible) {
-    void initOurStoryObserver()
-  }
   if (!isVisible || timerId) return
   now.value = new Date()
   timerId = window.setInterval(() => {
@@ -462,7 +362,13 @@ const parallaxLoop = () => {
 }
 
 const coupleDisplay = computed(() => `${brideName} & ${groomName}`)
-const weddingDateLabel = computed(() => eventDate.toLocaleDateString('vi-VN', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }))
+const weddingDateLabel = computed(() => {
+  const weekday = eventDate.toLocaleDateString('vi-VN', { weekday: 'long' }).toUpperCase()
+  const day = String(eventDate.getDate()).padStart(2, '0')
+  const month = String(eventDate.getMonth() + 1).padStart(2, '0')
+  const year = eventDate.getFullYear()
+  return `${weekday}, ${day} THÁNG ${month}, ${year}`
+})
 
 const countdownParts = computed(() => {
   const diff = Math.max(eventDate.getTime() - now.value.getTime(), 0)
@@ -486,40 +392,6 @@ const countdownBoxes = computed(() => ([
   { label: 'Phút', value: countdownParts.value.minutes },
   { label: 'Giây', value: countdownParts.value.seconds }
 ]))
-
-const events = [
-  {
-    tag: 'Nhà trai',
-    title: 'Lễ Vu Quy',
-    time: '08:00 • Chủ nhật, 12/12/2026',
-    address: 'Tư gia nhà trai, TP. Hồ Chí Minh',
-    note: 'Đón khách trong không gian sân vườn nhẹ nhàng, trang trí bằng lá xanh và nến vàng kim.',
-    map: true
-  },
-  {
-    tag: 'Nhà gái',
-    title: 'Lễ Thành Hôn',
-    time: '10:30 • Chủ nhật, 12/12/2026',
-    address: 'Tư gia nhà gái, TP. Hồ Chí Minh',
-    note: 'Nghi thức gia tiên ấm cúng, giản dị và trang nhã.',
-    map: false
-  },
-  {
-    tag: 'Tiệc cưới',
-    title: 'Chung vui cùng chúng tôi',
-    time: '17:30 • Chủ nhật, 12/12/2026',
-    address: 'Nhà hàng Hồng Hạc, Quận 1',
-    note: 'Không gian tiệc tối tối giản, ánh sáng ấm và bàn tiệc tinh tế.',
-    map: true
-  }
-]
-
-const gallery = [
-  { label: 'Khoảnh khắc', caption: 'Áo dài đôi', tone: 'photo-tone-one' },
-  { label: 'Lễ nghi', caption: 'Gia tiên', tone: 'photo-tone-two' },
-  { label: 'Tự nhiên', caption: 'Nụ cười', tone: 'photo-tone-three' },
-  { label: 'Chi tiết', caption: 'Hoa cưới', tone: 'photo-tone-four' }
-]
 
 const rsvpHeading = computed(() => `Anh/Chị ${guestName}, vui lòng xác nhận tham dự`)
 const footerText = computed(() => `© 2026 ${brideName} & ${groomName} — Trân trọng cảm ơn`)
@@ -555,7 +427,7 @@ const playInvitationMusic = async () => {
 }
 
 .hero-card {
-  box-shadow: 0 32px 68px rgba(18, 52, 37, 0.18), 0 2px 0 rgba(255, 255, 255, 0.6) inset;
+  box-shadow: 0 24px 58px rgba(18, 52, 37, 0.16), 0 2px 0 rgba(255, 255, 255, 0.58) inset;
 }
 
 .signature-rail__label {
@@ -575,6 +447,48 @@ const playInvitationMusic = async () => {
 .premium-chip {
   letter-spacing: 0.34em;
   text-transform: uppercase;
+}
+
+.editorial-invite-panel {
+  box-shadow: 0 14px 34px -24px rgba(26, 67, 49, 0.3);
+}
+
+.editorial-kicker-inline {
+  letter-spacing: 0.32em;
+}
+
+.editorial-invite-line {
+  letter-spacing: 0.008em;
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+  animation: invite-line-in 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.editorial-invite-line:nth-child(1) {
+  animation-delay: 220ms;
+}
+
+.editorial-invite-line:nth-child(2) {
+  animation-delay: 340ms;
+}
+
+.editorial-invite-line:nth-child(3) {
+  animation-delay: 460ms;
+}
+
+.editorial-location {
+  letter-spacing: 0.3em;
+}
+
+@keyframes invite-line-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .editorial-kicker {
@@ -599,8 +513,102 @@ const playInvitationMusic = async () => {
 }
 
 .hero-copy {
-  line-height: 1.95;
+  line-height: 1.9;
   color: rgba(26, 67, 49, 0.76);
+}
+
+.hero-date {
+  letter-spacing: 0.42em;
+}
+
+.hero-btn {
+  will-change: transform;
+}
+
+.hero-btn:hover {
+  transform: translateY(-2px);
+}
+
+.hero-btn--primary {
+  background: #1a4331;
+  box-shadow: 0 14px 28px -18px rgba(18, 52, 37, 0.42);
+}
+
+.hero-btn--primary:hover {
+  background: #123425;
+  box-shadow: 0 16px 32px -18px rgba(18, 52, 37, 0.5);
+}
+
+.hero-btn--secondary {
+  border-color: rgba(26, 67, 49, 0.18);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.hero-btn--secondary:hover {
+  border-color: rgba(212, 175, 55, 0.7);
+  color: #c49a28;
+  box-shadow: 0 14px 28px -22px rgba(18, 52, 37, 0.28);
+}
+
+.hero-countdown-editorial {
+  width: min(100%, 30rem);
+  margin-inline: auto;
+}
+
+.hero-countdown-editorial__row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 0.95rem;
+  align-items: end;
+}
+
+.hero-countdown-editorial__value {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.6rem, 5.2vw, 2.05rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: rgba(26, 67, 49, 0.76);
+  text-align: center;
+}
+
+.hero-countdown-editorial__row--labels {
+  margin-top: 0.4rem;
+}
+
+.hero-countdown-editorial__label {
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  color: rgba(26, 67, 49, 0.5);
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) {
+  .hero-countdown-editorial {
+    margin-inline: 0;
+    width: min(100%, 31rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .hero-countdown-editorial {
+    width: min(100%, 21rem);
+  }
+
+  .hero-countdown-editorial__row {
+    column-gap: 0.5rem;
+  }
+
+  .hero-countdown-editorial__value {
+    font-size: 1.45rem;
+  }
+
+  .hero-countdown-editorial__label {
+    font-size: 0.54rem;
+    letter-spacing: 0.24em;
+  }
 }
 
 @keyframes hero-stagger-in {
@@ -635,10 +643,15 @@ const playInvitationMusic = async () => {
 
 @media (prefers-reduced-motion: reduce) {
   .stagger-item,
-  .hero-card-sheen {
+  .hero-card-sheen,
+  .editorial-invite-line {
     animation: none;
     opacity: 1;
     transform: none;
+  }
+
+  .hero-btn {
+    transition: none;
   }
 }
 

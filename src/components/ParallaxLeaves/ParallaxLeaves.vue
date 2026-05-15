@@ -1,10 +1,10 @@
 <template>
   <div
     ref="parallaxRoot"
-    class="parallax-leaves pointer-events-none fixed inset-0 z-[1] overflow-hidden"
+    class="parallax-leaves pointer-events-none fixed inset-0 z-[12] overflow-hidden"
     aria-hidden="true"
   >
-    <span class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(232,243,237,0.25),_rgba(255,255,255,0)_45%)]"></span>
+    <span class="absolute inset-0 opacity-55 bg-[radial-gradient(circle_at_top,_rgba(232,243,237,0.2),_rgba(255,255,255,0)_45%)]"></span>
 
     <span
       v-for="leaf in leaves"
@@ -160,7 +160,7 @@ const leafStyle = leaf => ({
   width: `${leaf.size}px`,
   height: `${Math.round(leaf.size * 1.35)}px`,
   transform: `translate3d(calc(var(--parallax-x) * var(--depth) * -1), calc(var(--parallax-y) * var(--depth) * -1), 0) rotate(${leaf.rotate}deg)`,
-  filter: leaf.kind === 'leaf' ? 'drop-shadow(0 10px 20px rgba(22, 59, 44, 0.14))' : 'none'
+  filter: leaf.kind === 'leaf' ? 'drop-shadow(0 4px 8px rgba(22, 59, 44, 0.1))' : 'none'
 })
 
 const leafMotionStyle = leaf => ({
