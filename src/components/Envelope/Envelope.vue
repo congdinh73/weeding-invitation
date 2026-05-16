@@ -27,9 +27,7 @@
           Wedding Invitation
         </p>
 
-        <h1 class="font-serif text-4xl text-[#1A4331] tracking-[0.03em] sm:text-5xl">
-          Văn A & Thị B
-        </h1>
+        <h1 class="font-serif text-4xl text-[#1A4331] tracking-[0.03em] sm:text-5xl">{{ coupleName }}</h1>
 
         <p class="font-script mt-3 text-[2.2rem] leading-[0.92] text-[#1A4331]/88 drop-shadow-[0_1px_3px_rgba(26,67,49,0.14)] sm:text-[2.8rem]">
           We got married
@@ -48,13 +46,7 @@
             <div class="invite-card">
               <div class="absolute inset-[10px] rounded-[8px] border border-[#D4AF37]/30"></div>
 
-              <p class="relative mb-2 font-serif text-[1.45rem] text-[#1A4331]">
-                Thân mời
-              </p>
-
-              <p class="relative font-serif text-[1.2rem] italic text-[#1A4331]/80">
-                Nguyễn Văn A
-              </p>
+              <p class="relative mb-2 font-serif text-[1.28rem] leading-[1.35] text-[#1A4331]">{{ invitationLine }}</p>
 
               <div
                 class="relative mx-auto mt-6 h-px w-20 bg-gradient-to-r from-transparent via-[#D4AF37]/55 to-transparent"
@@ -95,7 +87,10 @@ import ParallaxLeaves from '../ParallaxLeaves/ParallaxLeaves.vue'
 const emit = defineEmits(['opened'])
 
 const props = defineProps({
-  playMusic: { type: Function, default: null }
+  playMusic: { type: Function, default: null },
+  coupleName: { type: String, default: 'Văn A & Thị B' },
+  guestName: { type: String, default: 'Quý khách' },
+  invitationLine: { type: String, default: 'Kính mời anh/chị' }
 })
 
 const isOpening = ref(false)
@@ -188,6 +183,7 @@ onBeforeUnmount(() => {
   top: 42%;
   z-index: 3;
   width: 74%;
+  min-height: 120px;
   transform: translateX(-50%);
   opacity: 0;
 
@@ -195,7 +191,7 @@ onBeforeUnmount(() => {
   border: 1px solid rgba(26, 67, 49, 0.08);
   background: linear-gradient(180deg, #fffefb 0%, #fdfaf3 100%);
 
-  padding: 2rem 1.5rem;
+  padding: 2.35rem 1.6rem 2.1rem;
   text-align: center;
 
   box-shadow: 0 10px 22px -18px rgba(26, 67, 49, 0.2);
@@ -231,8 +227,20 @@ onBeforeUnmount(() => {
 }
 
 .single-envelope.opened .invite-card {
-  top: 8%;
+  top: 6%;
   opacity: 1;
+}
+
+@media (min-width: 1024px) {
+  .invite-card {
+    width: 76%;
+    min-height: 164px;
+    padding: 2.9rem 1.9rem 2.5rem;
+  }
+
+  .single-envelope.opened .invite-card {
+    top: -4%;
+  }
 }
 
 /* mặt trước phong thư: chỉ là túi phẳng, không tạo V nữa */

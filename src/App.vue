@@ -2,7 +2,14 @@
   <div class="relative isolate min-h-screen bg-ivory text-forest antialiased">
     <FernBackground v-if="ENABLE_FERN_PARTICLES" />
     <MusicBar ref="musicBarRef" />
-    <Envelope v-if="!showMainContent" :couple-name="coupleDisplay" :guest-name="guestName" :play-music="playInvitationMusic" @opened="showMainContent = true" />
+    <Envelope
+      v-if="!showMainContent"
+      :couple-name="coupleDisplay"
+      :guest-name="guestDisplayName"
+      :invitation-line="inviteLine"
+      :play-music="playInvitationMusic"
+      @opened="showMainContent = true"
+    />
 
     <Transition name="main-entrance">
       <div v-if="showMainContent" class="main-content-wrapper w-full">
@@ -18,7 +25,7 @@
       </div>
     </div>
 
-    <header class="site-header sticky top-0 z-30 border-b border-forest/10 bg-white/72 backdrop-blur-xl">
+    <header class="site-header sticky top-0 z-30 border-b border-forest/18 bg-[#f7fbf8] shadow-[0_8px_22px_-18px_rgba(18,52,37,0.35)]">
       <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
         <a href="#top" class="site-brand block">
           <p class="site-brand__kicker text-[0.6rem] uppercase tracking-[0.42em] text-forest/48">Wedding Invitation</p>
@@ -40,13 +47,13 @@
           <a href="#invitation" class="site-mobile-menu__item" @click="mobileMenuOpen = false">Lời mời</a>
           <a href="#events" class="site-mobile-menu__item" @click="mobileMenuOpen = false">Sự kiện</a>
           <a href="#gallery" class="site-mobile-menu__item" @click="mobileMenuOpen = false">Bộ sưu tập</a>
-          <a href="#rsvp" class="site-mobile-menu__item" @click="mobileMenuOpen = false">RSVP</a>
+          <a href="#rsvp" class="site-mobile-menu__item" @click.prevent="mobileMenuOpen = false; scrollToRsvp()">Xác nhận tham dự</a>
         </div>
         <nav class="site-nav hidden items-center gap-7 text-[0.78rem] tracking-[0.16em] text-forest/68 md:flex">
           <a href="#invitation" class="site-nav__item transition">Lời mời</a>
           <a href="#events" class="site-nav__item transition">Sự kiện</a>
           <a href="#gallery" class="site-nav__item transition">Bộ sưu tập</a>
-          <a href="#rsvp" class="site-nav__item transition">RSVP</a>
+          <a href="#rsvp" class="site-nav__item transition" @click.prevent="scrollToRsvp">Xác nhận tham dự</a>
         </nav>
       </div>
     </header>
@@ -66,14 +73,14 @@
               <p class="hero-date text-[0.68rem] uppercase tracking-[0.42em] text-forest/52">{{ weddingDateLabel }}</p>
               <h1 class="luxury-stroke-title font-serif text-[2.72rem] leading-[0.97] text-forest sm:text-6xl lg:text-[5.25rem]">{{ brideName }} &amp; {{ groomName }}</h1>
               <p class="hero-copy mx-auto max-w-[36rem] text-[0.97rem] text-forest/70 lg:mx-0 lg:text-[1.02rem]">
-                Rất mong được gặp bạn trong ngày đặc biệt của chúng mình.
+                {{ heroGreeting }}
               </p>
             </div>
 
             <div class="stagger-item flex flex-wrap items-center justify-center gap-3 lg:justify-start" style="--stagger-index: 4">
-              <a href="#rsvp" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
+              <button type="button" @click="scrollToRsvp" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
                 Xác nhận tham dự
-              </a>
+              </button>
               <a href="#events" class="hero-btn hero-btn--secondary inline-flex h-11 items-center justify-center rounded-full border px-7 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-forest transition duration-300">
                 Xem lịch trình
               </a>
@@ -149,7 +156,7 @@
             Một lời mời nhỏ, cho khoảnh khắc mà chúng mình luôn mong đợi.
           </p>
           <p class="editorial-body mx-auto mt-5 max-w-2xl text-base leading-8 text-forest/75 sm:text-lg">
-            Sự hiện diện của anh/chị sẽ khiến ngày hôm ấy trở nên trọn vẹn hơn.
+            Sự hiện diện của quý khách sẽ khiến ngày hôm ấy trở nên trọn vẹn hơn.
           </p>
         </div>
       </section>
@@ -158,54 +165,64 @@
 
       <WeddingGallery />
 
-      <section id="rsvp" class="bg-ivory/68">
+      <section id="rsvp" ref="rsvpSectionRef" class="bg-ivory/68">
         <div class="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div class="rsvp-panel rounded-[1.55rem] border border-white/48 bg-white/76 p-6 shadow-[0_20px_42px_-28px_rgba(18,52,37,0.26)] backdrop-blur-lg sm:p-8">
+          <div class="rsvp-panel rounded-[1.55rem] border border-white/48 bg-white/76 p-6 shadow-[0_20px_42px_-28px_rgba(18,52,37,0.26)] backdrop-blur-lg sm:p-8" :class="{ 'rsvp-panel--highlight': rsvpHighlighted }">
             <div class="text-center">
-              <p class="text-[0.68rem] uppercase tracking-[0.45em] text-forest/48">RSVP</p>
-              <h2 class="mt-3 font-serif text-3xl text-forest sm:text-[2.35rem]">{{ rsvpHeading }}</h2>
-              <p class="mx-auto mt-4 max-w-xl text-sm leading-7 text-forest/66 sm:text-[0.96rem]">
-                Vui lòng xác nhận để chúng mình chuẩn bị chu đáo cho ngày gặp gỡ.
+              <p class="text-[0.68rem] uppercase tracking-[0.45em] text-forest/48">Xác nhận tham dự</p>
+              <h2 class="rsvp-heading mt-3 font-serif text-forest">{{ rsvpHeading }}</h2>
+              <p v-if="!hasGuestProfile" class="mx-auto mt-2 max-w-xl text-[0.78rem] tracking-[0.06em] text-forest/52">
+                Thiệp mời chung dành cho khách quý của gia đình.
+              </p>
+              <p class="rsvp-subtitle mx-auto mt-4 max-w-xl text-sm leading-7 text-forest/66 sm:text-[0.96rem]">
+                {{ rsvpSubtitle }}
               </p>
             </div>
 
-            <form class="mt-8 grid gap-4.5 sm:gap-5">
-              <label class="grid gap-2 text-[0.82rem] tracking-[0.08em] text-forest/62">
-                <span>Họ và tên</span>
-                <input type="text" :value="guestName" placeholder="Nhập họ tên của anh/chị" class="rsvp-input rounded-[0.95rem] border border-forest/8 bg-white/65 px-4 py-3 outline-none transition" />
-              </label>
-
-              <div class="grid gap-4 sm:grid-cols-2">
+            <Transition name="rsvp-fade" mode="out-in">
+              <form v-if="rsvpStatus === RSVP_STATUS.IDLE || rsvpStatus === RSVP_STATUS.SUBMITTING || rsvpStatus === RSVP_STATUS.ERROR" key="rsvp-form" class="mt-8 grid gap-4.5 sm:gap-5" @submit.prevent="handleRsvpSubmit">
                 <label class="grid gap-2 text-[0.82rem] tracking-[0.08em] text-forest/62">
-                  <span>Số người tham dự</span>
-                  <select class="rsvp-input rounded-[0.95rem] border border-forest/8 bg-white/65 px-4 py-3 outline-none transition">
-                    <option>1 người</option>
-                    <option>2 người</option>
-                    <option>3 người</option>
-                    <option>4 người</option>
-                    <option>Khác</option>
-                  </select>
+                  <span>Khách mời</span>
+                  <p class="rsvp-guest-readonly rounded-[0.95rem] border border-forest/10 bg-white/78 px-4 py-3">{{ guestDisplayName }}</p>
                 </label>
 
+                <div class="grid gap-4 sm:grid-cols-1">
+                  <label class="grid gap-2 text-[0.82rem] tracking-[0.08em] text-forest/62">
+                    <span>Số người tham dự</span>
+                    <select v-model="rsvpForm.guestCount" :disabled="isSubmitting" class="rsvp-input rounded-[0.95rem] border border-forest/8 bg-white/65 px-4 py-3 outline-none transition">
+                      <option>1 người</option>
+                      <option>2 người</option>
+                      <option>3 người</option>
+                      <option>4 người</option>
+                      <option>Khác</option>
+                    </select>
+                  </label>
+                </div>
+
                 <label class="grid gap-2 text-[0.82rem] tracking-[0.08em] text-forest/62">
-                  <span>Trạng thái</span>
-                  <select class="rsvp-input rounded-[0.95rem] border border-forest/8 bg-white/65 px-4 py-3 outline-none transition">
-                    <option>Tôi sẽ tham dự</option>
-                    <option>Tôi chưa chắc chắn</option>
-                    <option>Rất tiếc, tôi không tham dự được</option>
-                  </select>
+                  <span>Lời nhắn</span>
+                  <textarea v-model.trim="rsvpForm.message" :disabled="isSubmitting" rows="4" placeholder="Gửi lời chúc đến chúng mình..." class="rsvp-input rounded-[0.95rem] border border-forest/8 bg-white/65 px-4 py-3 outline-none transition"></textarea>
                 </label>
+
+                <p v-if="rsvpStatus === 'error' && submitError" class="rsvp-submit-error">{{ submitError }}</p>
+
+                <button :disabled="isSubmitting" type="submit" class="rsvp-submit-btn mt-2 inline-flex h-11 items-center justify-center rounded-full bg-forest px-7 text-[0.78rem] font-medium uppercase tracking-[0.17em] text-white transition duration-300">
+                  <span v-if="isSubmitting" class="rsvp-loading-dot" aria-hidden="true"></span>
+                  <span>{{ isSubmitting ? 'Đang gửi...' : 'Gửi phản hồi' }}</span>
+                </button>
+              </form>
+
+              <div v-else-if="rsvpStatus === RSVP_STATUS.SUCCESS" key="rsvp-success" class="rsvp-success-card" aria-live="polite">
+                <div class="rsvp-success-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M5.5 12.5 10 17l8.5-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </div>
+                <h3 class="rsvp-success-title">Đã nhận phản hồi của {{ guestDisplayName }}</h3>
+                <p class="rsvp-success-copy">{{ thankYouLine }}</p>
+                <button type="button" class="rsvp-reset-btn" @click="resetRsvpForm">Gửi phản hồi khác</button>
               </div>
-
-              <label class="grid gap-2 text-[0.82rem] tracking-[0.08em] text-forest/62">
-                <span>Lời nhắn</span>
-                <textarea rows="4" placeholder="Lời chúc gửi đến cô dâu chú rể..." class="rsvp-input rounded-[0.95rem] border border-forest/8 bg-white/65 px-4 py-3 outline-none transition"></textarea>
-              </label>
-
-              <button type="button" class="rsvp-submit-btn mt-2 inline-flex h-11 items-center justify-center rounded-full bg-forest px-7 text-[0.78rem] font-medium uppercase tracking-[0.17em] text-white transition duration-300">
-                Gửi xác nhận
-              </button>
-            </form>
+            </Transition>
           </div>
         </div>
       </section>
@@ -224,6 +241,8 @@
 <script setup>
 import { computed, defineAsyncComponent, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { ENABLE_FERN_PARTICLES, ENABLE_FOREST_PARTICLES, ENABLE_LEAF_FLOAT, ENABLE_PARALLAX } from './config/performance'
+import { useGuest } from './composables/useGuest'
+import { useRSVP } from './composables/useRSVP'
 
 const loadEnvelopeComponent = () => import('./components/Envelope/Envelope.vue')
 const loadMusicBarComponent = () => import('./components/MusicBar.vue')
@@ -277,14 +296,17 @@ const WeddingGallery = defineAsyncComponent({
 const params = new URLSearchParams(window.location.search)
 const brideName = params.get('bride') || 'Văn A'
 const groomName = params.get('groom') || 'Thị B'
-const guestName = params.get('guest') || 'Quý khách'
 const eventDate = new Date(params.get('date') || '2026-12-12T10:00:00+07:00')
+const { slug, guest, guestDisplayName, inviteLine, thankYouLine, heroGreeting, hasGuestProfile } = useGuest()
 
 const now = ref(new Date())
 const showMainContent = ref(false)
 const mobileMenuOpen = ref(false)
 const musicBarRef = ref(null)
+const rsvpSectionRef = ref(null)
+const rsvpHighlighted = ref(false)
 let timerId
+let highlightTimerId
 
 onMounted(() => {
   const preloadMainChunks = () => {
@@ -309,6 +331,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.clearInterval(timerId)
+  window.clearTimeout(highlightTimerId)
 })
 
 watch(showMainContent, (isVisible) => {
@@ -352,8 +375,10 @@ const countdownBoxes = computed(() => ([
   { label: 'Giây', value: countdownParts.value.seconds }
 ]))
 
-const rsvpHeading = computed(() => `Anh/Chị ${guestName}, vui lòng xác nhận tham dự`)
+const rsvpHeading = computed(() => `Chúng mình rất mong được gặp ${guestDisplayName}`)
+const rsvpSubtitle = computed(() => `Sự hiện diện của ${guestDisplayName} sẽ khiến ngày hôm ấy trọn vẹn hơn.`)
 const footerText = computed(() => `© 2026 ${brideName} & ${groomName} — Trân trọng cảm ơn`)
+const { RSVP_STATUS, status: rsvpStatus, form: rsvpForm, submitError, isSubmitting, submit, reset } = useRSVP({ ...guest, slug })
 
 const playInvitationMusic = async () => {
   if (!musicBarRef.value) {
@@ -361,6 +386,32 @@ const playInvitationMusic = async () => {
     await nextTick()
   }
   musicBarRef.value?.playWithFade?.()
+}
+
+const highlightRsvpPanel = () => {
+  rsvpHighlighted.value = true
+  window.clearTimeout(highlightTimerId)
+  highlightTimerId = window.setTimeout(() => {
+    rsvpHighlighted.value = false
+  }, 1200)
+}
+
+const scrollToRsvp = () => {
+  const section = rsvpSectionRef.value
+  if (!section) return
+  const header = document.querySelector('.site-header')
+  const headerHeight = header ? header.getBoundingClientRect().height : 0
+  const targetY = section.getBoundingClientRect().top + window.scrollY - headerHeight - 12
+  window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' })
+  highlightRsvpPanel()
+}
+
+const handleRsvpSubmit = async () => {
+  await submit()
+}
+
+const resetRsvpForm = () => {
+  reset()
 }
 
 </script>
@@ -602,11 +653,43 @@ const playInvitationMusic = async () => {
 
 .rsvp-panel {
   box-shadow: 0 22px 44px -30px rgba(18, 52, 37, 0.28);
+  transition: box-shadow 860ms cubic-bezier(0.22, 1, 0.36, 1), border-color 860ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rsvp-panel--highlight {
+  border-color: rgba(212, 175, 55, 0.52);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.24), 0 24px 44px -28px rgba(18, 52, 37, 0.32);
+}
+
+.rsvp-heading {
+  font-size: clamp(1.95rem, 5.8vw, 2.32rem);
+  line-height: 1.15;
+  max-width: 22ch;
+  margin-left: auto;
+  margin-right: auto;
+  text-wrap: balance;
+}
+
+.rsvp-subtitle {
+  max-width: 32ch;
+  text-wrap: balance;
+}
+
+.rsvp-guest-readonly {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: rgba(26, 67, 49, 0.86);
 }
 
 .rsvp-input {
   color: rgba(26, 67, 49, 0.86);
   box-shadow: inset 0 0 0 1px rgba(26, 67, 49, 0.04);
+}
+
+.rsvp-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.64;
 }
 
 .rsvp-input::placeholder {
@@ -620,19 +703,134 @@ const playInvitationMusic = async () => {
 }
 
 .rsvp-submit-btn {
+  gap: 0.5rem;
   box-shadow: 0 16px 30px -18px rgba(18, 52, 37, 0.42);
 }
 
-.rsvp-submit-btn:hover {
+.rsvp-submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   background: #123425;
   box-shadow: 0 18px 32px -18px rgba(18, 52, 37, 0.5);
+}
+
+.rsvp-submit-btn:disabled {
+  cursor: not-allowed;
+  transform: none;
+  background: rgba(26, 67, 49, 0.72);
+  box-shadow: 0 12px 24px -16px rgba(18, 52, 37, 0.4);
+}
+
+.rsvp-input--error {
+  border-color: rgba(168, 94, 70, 0.52);
+  box-shadow: 0 10px 22px -18px rgba(129, 68, 45, 0.38), inset 0 0 0 1px rgba(168, 94, 70, 0.16);
+}
+
+.rsvp-field-error {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(129, 68, 45, 0.92);
+}
+
+.rsvp-submit-error {
+  margin: 0.1rem 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: rgba(129, 68, 45, 0.92);
+}
+
+.rsvp-loading-dot {
+  width: 0.82rem;
+  height: 0.82rem;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: rgba(255, 255, 255, 0.9);
+  animation: rsvp-spin 0.8s linear infinite;
+}
+
+.rsvp-success-card {
+  margin-top: 2rem;
+  border-radius: 1.1rem;
+  border: 1px solid rgba(26, 67, 49, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(247, 251, 248, 0.9));
+  padding: 2rem 1.2rem;
+  text-align: center;
+  box-shadow: 0 18px 36px -28px rgba(18, 52, 37, 0.28);
+}
+
+.rsvp-success-icon {
+  width: 2.15rem;
+  height: 2.15rem;
+  margin: 0 auto 0.95rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(26, 67, 49, 0.24);
+  color: rgba(26, 67, 49, 0.86);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.rsvp-success-icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.rsvp-success-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.5rem, 4vw, 1.92rem);
+  line-height: 1.2;
+  color: rgba(26, 67, 49, 0.92);
+}
+
+.rsvp-success-copy {
+  margin: 0.85rem auto 0;
+  max-width: 30rem;
+  font-size: 0.96rem;
+  line-height: 1.9;
+  color: rgba(26, 67, 49, 0.74);
+}
+
+.rsvp-reset-btn {
+  margin-top: 1.25rem;
+  border: 1px solid rgba(26, 67, 49, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.76);
+  color: rgba(26, 67, 49, 0.85);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.68rem 1.15rem;
+  transition: border-color 0.32s ease, color 0.32s ease, transform 0.32s ease;
+}
+
+.rsvp-reset-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(26, 67, 49, 0.36);
+  color: rgba(18, 52, 37, 0.98);
+}
+
+.rsvp-fade-enter-active,
+.rsvp-fade-leave-active {
+  transition: opacity 820ms cubic-bezier(0.22, 1, 0.36, 1), transform 820ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rsvp-fade-enter-from,
+.rsvp-fade-leave-to {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
 }
 
 @media (min-width: 1024px) {
   .hero-countdown-editorial {
     margin-inline: 0;
     width: min(100%, 31rem);
+  }
+
+  .rsvp-subtitle {
+    max-width: none;
+    white-space: nowrap;
   }
 }
 
@@ -685,10 +883,17 @@ const playInvitationMusic = async () => {
   }
 }
 
+@keyframes rsvp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stagger-item,
   .hero-card-sheen,
-  .editorial-invite-line {
+  .editorial-invite-line,
+  .rsvp-loading-dot {
     animation: none;
     opacity: 1;
     transform: none;
@@ -701,7 +906,10 @@ const playInvitationMusic = async () => {
   .site-nav__item,
   .site-menu-btn,
   .site-mobile-menu__item,
-  .rsvp-submit-btn {
+  .rsvp-submit-btn,
+  .rsvp-fade-enter-active,
+  .rsvp-fade-leave-active,
+  .rsvp-reset-btn {
     transition: none;
   }
 }

@@ -47,11 +47,13 @@ import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { ENABLE_LEAF_FLOAT, ENABLE_PARALLAX, PARALLAX_DEBUG } from '../../config/performance'
 
 const parallaxRoot = ref(null)
+const mobileScreen = window.matchMedia('(max-width: 767px)').matches
+const tabletScreen = window.matchMedia('(max-width: 1023px)').matches
 
 const layerConfigs = [
-  { depth: 0.04, count: 6, kind: 'leaf', opacity: [0.16, 0.28] },
-  { depth: 0.07, count: 3, kind: 'dot', opacity: [0.14, 0.24] },
-  { depth: 0.1, count: 3, kind: 'leaf', opacity: [0.2, 0.34] }
+  { depth: 0.04, count: mobileScreen ? 10 : 6, kind: 'leaf', opacity: [0.16, 0.28] },
+  { depth: 0.07, count: mobileScreen ? 4 : 3, kind: 'dot', opacity: [0.14, 0.24] },
+  { depth: 0.1, count: mobileScreen ? 5 : 3, kind: 'leaf', opacity: [0.2, 0.34] }
 ]
 
 const leafPalette = ['#DDEDE4', '#C6DECF', '#91B8A4', '#5E8E78']
@@ -80,8 +82,8 @@ const leaves = computed(() => {
         stroke: '#163B2C',
         vein: '#0D2A1F',
         opacity: randomBetween(layer.opacity[0], layer.opacity[1]),
-        hideOnMobile: Math.random() < 0.75,
-        hideOnTablet: Math.random() < 0.45
+        hideOnMobile: false,
+        hideOnTablet: tabletScreen && !mobileScreen ? Math.random() < 0.2 : false
       })
     }
   }
@@ -98,7 +100,6 @@ let moveHandler
 let visibilityHandler
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 const coarsePointer = window.matchMedia('(pointer: coarse)').matches
-const mobileScreen = window.matchMedia('(max-width: 767px)').matches
 let initCount = 0
 let destroyCount = 0
 

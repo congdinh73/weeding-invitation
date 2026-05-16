@@ -16,7 +16,9 @@
         >
           <div class="timeline-dot" aria-hidden="true"></div>
           <div class="timeline-card">
-            <figure v-if="item.image" class="timeline-photo reveal-image" :class="item.imageTone" aria-hidden="true"></figure>
+            <figure v-if="item.image" class="timeline-photo reveal-image" :class="item.imageTone" aria-hidden="true">
+              <img class="timeline-photo-img" :src="item.imageSrc" :alt="item.title" loading="lazy" />
+            </figure>
             <span class="timeline-index">{{ formatIndex(index + 1) }}</span>
             <h3 class="timeline-card-title">{{ item.title }}</h3>
             <p class="timeline-card-text">{{ item.text }}</p>
@@ -31,10 +33,10 @@
 import { useRevealAnimation } from '../composables/useRevealAnimation'
 
 const timelineItems = [
-  { id: 'first-meet', title: 'Ngày đầu gặp nhau', text: 'Giữa những điều rất đỗi bình thường, chúng mình đã tìm thấy nhau.', image: true, imageTone: 'timeline-photo--one' },
-  { id: 'dating-days', title: 'Những ngày yêu nhau', text: 'Cùng đi qua những ngày vui, những lần giận hờn, và cả những khoảnh khắc thật giản dị.' },
-  { id: 'proposal', title: 'Lời cầu hôn', text: 'Một lời hứa được nói ra, cho hành trình mới mà cả hai cùng mong đợi.', image: true, imageTone: 'timeline-photo--two' },
-  { id: 'wedding-day', title: 'Ngày về chung đôi', text: 'Hôm nay, chúng mình viết tiếp câu chuyện ấy bằng một mái nhà chung.' }
+  { id: 'first-meet', title: 'Ngày đầu gặp nhau', text: 'Giữa những điều rất đỗi bình thường, chúng mình đã tìm thấy nhau.', image: true, imageTone: 'timeline-photo--one', imageSrc: 'https://picsum.photos/seed/wedding-first-meet/800/1000' },
+  { id: 'dating-days', title: 'Những ngày yêu nhau', text: 'Cùng đi qua những ngày vui, những lần giận hờn, và cả những khoảnh khắc thật giản dị.', image: true, imageTone: 'timeline-photo--two', imageSrc: 'https://picsum.photos/seed/wedding-dating-days/800/1000' },
+  { id: 'proposal', title: 'Lời cầu hôn', text: 'Một lời hứa được nói ra, cho hành trình mới mà cả hai cùng mong đợi.', image: true, imageTone: 'timeline-photo--one', imageSrc: 'https://picsum.photos/seed/wedding-proposal/800/1000' },
+  { id: 'wedding-day', title: 'Ngày về chung đôi', text: 'Hôm nay, chúng mình viết tiếp câu chuyện ấy bằng một mái nhà chung.', image: true, imageTone: 'timeline-photo--two', imageSrc: 'https://picsum.photos/seed/wedding-day/800/1000' }
 ]
 
 const { registerReveal } = useRevealAnimation({ rootMargin: '0px 0px -10% 0px', threshold: 0.16 })
@@ -59,6 +61,7 @@ const formatIndex = (value) => String(value).padStart(2, '0')
 .timeline-item.is-visible .timeline-dot { transform: scale(1); }
 .timeline-card { position: relative; border-radius: 16px; border: 1px solid rgba(26, 67, 49, 0.08); background: rgba(255, 255, 255, 0.82); box-shadow: 0 16px 40px -28px rgba(26, 67, 49, 0.2); padding: 1.1rem 1rem 1rem; }
 .timeline-photo { width: min(45%, 170px); aspect-ratio: 4 / 5; border-radius: 16px; margin: 0 0 0.85rem; border: 1px solid rgba(255, 255, 255, 0.7); box-shadow: 0 12px 26px -20px rgba(26, 67, 49, 0.35); overflow: hidden; }
+.timeline-photo-img { width: 100%; height: 100%; display: block; object-fit: cover; }
 .timeline-photo--one { background: radial-gradient(circle at 70% 16%, rgba(255, 255, 255, 0.38), transparent 24%), linear-gradient(165deg, rgba(247, 251, 248, 0.95) 0%, rgba(216, 231, 221, 0.88) 58%, rgba(26, 67, 49, 0.2) 100%); }
 .timeline-photo--two { background: radial-gradient(circle at 30% 12%, rgba(255, 255, 255, 0.34), transparent 22%), linear-gradient(165deg, rgba(251, 247, 240, 0.94) 0%, rgba(232, 243, 237, 0.88) 52%, rgba(195, 124, 86, 0.24) 100%); }
 .timeline-index { position: absolute; right: 0.75rem; top: 0.5rem; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; font-size: 2.25rem; line-height: 1; color: rgba(26, 67, 49, 0.11); pointer-events: none; }
