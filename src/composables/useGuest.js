@@ -14,7 +14,10 @@ const slugToDisplayName = (slug) => String(slug || '')
 
 export const useGuest = () => {
   const cleanPath = window.location.pathname.replace(/\/+$/, '')
-  const slug = cleanPath.startsWith('/invite/') ? decodeURIComponent(cleanPath.slice('/invite/'.length)) : ''
+  const cleanHash = window.location.hash.replace(/^#/, '')
+  const hashSlug = cleanHash.startsWith('/invite/') ? decodeURIComponent(cleanHash.slice('/invite/'.length)) : ''
+  const pathSlug = cleanPath.startsWith('/invite/') ? decodeURIComponent(cleanPath.slice('/invite/'.length)) : ''
+  const slug = hashSlug || pathSlug
 
   const mappedDisplayName = guests[slug]
   const guest = mappedDisplayName ? createGuestData(mappedDisplayName) : genericGuest
