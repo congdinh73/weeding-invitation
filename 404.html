@@ -1,0 +1,21 @@
+﻿<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content="0; url=/" />
+    <script>
+      (function () {
+        const { location } = window
+        const isGithubPages = location.hostname.endsWith('github.io')
+        const segments = location.pathname.split('/').filter(Boolean)
+        const base = isGithubPages && segments.length > 0 ? `/${segments[0]}` : ''
+        const routeSegments = isGithubPages ? segments.slice(1) : segments
+        const routePath = `/${routeSegments.join('/')}`
+
+        const target = `${location.origin}${base}/?p=${encodeURIComponent(routePath)}&q=${encodeURIComponent(location.search.slice(1))}&h=${encodeURIComponent(location.hash.slice(1))}`
+        location.replace(target)
+      })()
+    </script>
+  </head>
+  <body></body>
+</html>

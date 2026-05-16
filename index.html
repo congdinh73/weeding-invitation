@@ -1,9 +1,27 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="vi">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Thiệp Cưới — Landing</title>
+    <script>
+      (function () {
+        const params = new URLSearchParams(window.location.search)
+        const p = params.get('p')
+        if (!p) return
+
+        const q = params.get('q')
+        const h = params.get('h')
+        const isGithubPages = window.location.hostname.endsWith('github.io')
+        const pathParts = window.location.pathname.split('/').filter(Boolean)
+        const base = isGithubPages && pathParts.length > 0 ? `/${pathParts[0]}` : ''
+        const restoredPath = `${base}${decodeURIComponent(p)}`
+        const restoredSearch = q ? `?${decodeURIComponent(q)}` : ''
+        const restoredHash = h ? `#${decodeURIComponent(h)}` : ''
+
+        window.history.replaceState(null, '', `${restoredPath}${restoredSearch}${restoredHash}`)
+      })()
+    </script>
   </head>
   <body>
     <div id="app"></div>
