@@ -78,12 +78,12 @@
             </div>
 
             <div class="stagger-item flex flex-wrap items-center justify-center gap-3 lg:justify-start" style="--stagger-index: 4">
-              <button type="button" @click="scrollToRsvp" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
-                Xác nhận tham dự
+              <button type="button" @click="scrollToInvitationSection" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
+                Xem lời mời
               </button>
-              <a href="#events" class="hero-btn hero-btn--secondary inline-flex h-11 items-center justify-center rounded-full border px-7 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-forest transition duration-300">
+              <button type="button" @click="scrollToScheduleSection" class="hero-btn hero-btn--secondary inline-flex h-11 items-center justify-center rounded-full border px-7 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-forest transition duration-300">
                 Xem lịch trình
-              </a>
+              </button>
             </div>
 
             <div class="stagger-item hero-countdown-editorial mt-2" style="--stagger-index: 5">
@@ -165,10 +165,29 @@
 
       <WeddingGallery />
 
-      <section id="rsvp" ref="rsvpSectionRef" class="bg-ivory/68">
-        <div class="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
-          <div class="rsvp-panel rounded-[1.55rem] border border-white/48 bg-white/76 p-6 shadow-[0_20px_42px_-28px_rgba(18,52,37,0.26)] backdrop-blur-lg sm:p-8" :class="{ 'rsvp-panel--highlight': rsvpHighlighted }">
-            <div class="text-center">
+      <section class="rsvp-cta-section bg-white" :class="{ 'is-collapsed': !rsvpCtaVisible, 'is-fading': rsvpCtaFading }">
+        <div class="mx-auto w-full max-w-3xl px-4 py-20 text-center sm:px-6 lg:px-8 lg:py-28">
+          <h2 class="rsvp-cta-heading font-serif text-forest">Bạn sẽ đến chứ?</h2>
+          <p class="rsvp-cta-copy mx-auto mt-5 max-w-xl text-forest/68">
+            Một lời hồi đáp nhỏ sẽ giúp chúng mình chuẩn bị chu đáo hơn.
+          </p>
+          <button type="button" class="rsvp-cta-link mt-8 inline-flex items-center gap-2 text-forest/78 transition duration-300" @click="handleRevealRsvp">
+            <span>Phản hồi lời mời</span>
+            <span aria-hidden="true" class="rsvp-cta-arrow">→</span>
+          </button>
+        </div>
+      </section>
+
+      <section id="rsvp" ref="rsvpSectionRef" class="relative bg-ivory/68" :data-rsvp-view="rsvpViewState">
+        <FloatingWishes
+          v-if="rsvpExpanded && !compactViewport"
+          class="rsvp-floating-global"
+          :reduce-motion="prefersReducedMotion"
+        />
+        <div class="relative mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8" :class="rsvpExpanded ? 'py-14 lg:py-20' : 'py-0'">
+          <div ref="rsvpPanelAnchorRef" class="rsvp-reveal-shell" :class="{ 'is-expanded': rsvpExpanded }">
+            <div class="rsvp-panel relative z-10 rounded-[1.55rem] border border-white/55 bg-white/80 p-7 sm:p-9" :class="{ 'rsvp-panel--highlight': rsvpHighlighted }">
+            <div class="relative z-10 text-center">
               <p class="text-[0.68rem] uppercase tracking-[0.45em] text-forest/48">Xác nhận tham dự</p>
               <h2 class="rsvp-heading mt-3 font-serif text-forest">{{ rsvpHeading }}</h2>
               <p v-if="!hasGuestProfile" class="mx-auto mt-2 max-w-xl text-[0.78rem] tracking-[0.06em] text-forest/52">
@@ -179,8 +198,8 @@
               </p>
             </div>
 
-            <Transition name="rsvp-fade" mode="out-in">
-              <form v-if="rsvpStatus === RSVP_STATUS.IDLE || rsvpStatus === RSVP_STATUS.SUBMITTING || rsvpStatus === RSVP_STATUS.ERROR" key="rsvp-form" class="mt-8 grid gap-4.5 sm:gap-5" @submit.prevent="handleRsvpSubmit">
+              <Transition name="rsvp-fade" mode="out-in">
+                <form v-if="rsvpStatus === RSVP_STATUS.IDLE || rsvpStatus === RSVP_STATUS.SUBMITTING || rsvpStatus === RSVP_STATUS.ERROR" key="rsvp-form" class="mt-9 grid gap-5.5 sm:gap-6" @submit.prevent="handleRsvpSubmit">
                 <label class="grid gap-2 text-[0.82rem] tracking-[0.08em] text-forest/62">
                   <span>Khách mời</span>
                   <p class="rsvp-guest-readonly rounded-[0.95rem] border border-forest/10 bg-white/78 px-4 py-3">{{ guestDisplayName }}</p>
@@ -222,8 +241,15 @@
                 <p class="rsvp-success-copy">{{ thankYouLine }}</p>
                 <button type="button" class="rsvp-reset-btn" @click="resetRsvpForm">Gửi phản hồi khác</button>
               </div>
-            </Transition>
+              </Transition>
+            </div>
           </div>
+          <FloatingWishes
+            v-if="rsvpExpanded && compactViewport"
+            class="rsvp-mobile-strip"
+            :reduce-motion="prefersReducedMotion"
+            mobile-strip
+          />
         </div>
       </section>
     </main>
@@ -252,6 +278,7 @@ const loadParallaxLeavesComponent = () => import('./components/ParallaxLeaves/Pa
 const loadLoveStoryTimelineComponent = () => import('./components/LoveStoryTimeline.vue')
 const loadWeddingInfoComponent = () => import('./components/WeddingInfo.vue')
 const loadWeddingGalleryComponent = () => import('./components/WeddingGallery.vue')
+const loadFloatingWishesComponent = () => import('./components/FloatingWishes.vue')
 
 const Envelope = defineAsyncComponent({
   loader: loadEnvelopeComponent,
@@ -292,21 +319,32 @@ const WeddingGallery = defineAsyncComponent({
   loader: loadWeddingGalleryComponent,
   suspensible: false
 })
+const FloatingWishes = defineAsyncComponent({
+  loader: loadFloatingWishesComponent,
+  suspensible: false
+})
 
 const params = new URLSearchParams(window.location.search)
 const brideName = params.get('bride') || 'Văn A'
 const groomName = params.get('groom') || 'Thị B'
 const eventDate = new Date(params.get('date') || '2026-12-12T10:00:00+07:00')
 const { slug, guest, guestDisplayName, inviteLine, thankYouLine, heroGreeting, hasGuestProfile } = useGuest()
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+const compactViewport = window.matchMedia('(max-width: 767px)').matches
 
 const now = ref(new Date())
 const showMainContent = ref(false)
 const mobileMenuOpen = ref(false)
 const musicBarRef = ref(null)
 const rsvpSectionRef = ref(null)
+const rsvpPanelAnchorRef = ref(null)
+const rsvpExpanded = ref(false)
+const rsvpCtaVisible = ref(true)
+const rsvpCtaFading = ref(false)
 const rsvpHighlighted = ref(false)
 let timerId
 let highlightTimerId
+let rsvpCtaTimerId
 
 onMounted(() => {
   const preloadMainChunks = () => {
@@ -314,6 +352,7 @@ onMounted(() => {
       loadLoveStoryTimelineComponent(),
       loadWeddingInfoComponent(),
       loadWeddingGalleryComponent(),
+      loadFloatingWishesComponent(),
       loadMusicBarComponent()
     ]
     if (ENABLE_FERN_PARTICLES) tasks.push(loadFernBackgroundComponent())
@@ -332,6 +371,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.clearInterval(timerId)
   window.clearTimeout(highlightTimerId)
+  window.clearTimeout(rsvpCtaTimerId)
 })
 
 watch(showMainContent, (isVisible) => {
@@ -379,6 +419,18 @@ const rsvpHeading = computed(() => `Chúng mình rất mong được gặp ${gue
 const rsvpSubtitle = computed(() => `Sự hiện diện của ${guestDisplayName} sẽ khiến ngày hôm ấy trọn vẹn hơn.`)
 const footerText = computed(() => `© 2026 ${brideName} & ${groomName} — Trân trọng cảm ơn`)
 const { RSVP_STATUS, status: rsvpStatus, form: rsvpForm, submitError, isSubmitting, submit, reset } = useRSVP({ ...guest, slug })
+const RSVP_VIEW_STATE = {
+  COLLAPSED: 'collapsed',
+  EXPANDED: 'expanded',
+  SUBMITTING: 'submitting',
+  SUCCESS: 'success'
+}
+const rsvpViewState = computed(() => {
+  if (!rsvpExpanded.value) return RSVP_VIEW_STATE.COLLAPSED
+  if (rsvpStatus.value === RSVP_STATUS.SUBMITTING) return RSVP_VIEW_STATE.SUBMITTING
+  if (rsvpStatus.value === RSVP_STATUS.SUCCESS) return RSVP_VIEW_STATE.SUCCESS
+  return RSVP_VIEW_STATE.EXPANDED
+})
 
 const playInvitationMusic = async () => {
   if (!musicBarRef.value) {
@@ -397,13 +449,78 @@ const highlightRsvpPanel = () => {
 }
 
 const scrollToRsvp = () => {
-  const section = rsvpSectionRef.value
+  if (!rsvpExpanded.value) {
+    void revealRsvpInline({ shouldScroll: true })
+    return
+  }
+  scrollToElement(rsvpPanelAnchorRef.value)
+  highlightRsvpPanel()
+}
+
+const handleRevealRsvp = () => {
+  void revealRsvpInline({ shouldScroll: true })
+}
+
+const revealRsvpInline = async ({ shouldScroll = false } = {}) => {
+  if (rsvpExpanded.value) {
+    if (shouldScroll) {
+      scrollToElement(rsvpPanelAnchorRef.value)
+      highlightRsvpPanel()
+    }
+    return
+  }
+
+  if (rsvpCtaVisible.value) {
+    rsvpCtaFading.value = true
+    await new Promise((resolve) => {
+      window.clearTimeout(rsvpCtaTimerId)
+      rsvpCtaTimerId = window.setTimeout(resolve, 320)
+    })
+    rsvpCtaVisible.value = false
+    rsvpCtaFading.value = false
+  }
+
+  rsvpExpanded.value = true
+  await nextTick()
+
+  if (shouldScroll) {
+    await new Promise((resolve) => {
+      window.clearTimeout(rsvpCtaTimerId)
+      rsvpCtaTimerId = window.setTimeout(resolve, 120)
+    })
+    scrollToElement(rsvpPanelAnchorRef.value)
+    highlightRsvpPanel()
+  }
+}
+
+const scrollToInvitationSection = () => {
+  scrollToSection('#love-story', ['#invitation'])
+}
+
+const scrollToScheduleSection = () => {
+  scrollToSection('#events')
+}
+
+const scrollToSection = (primarySelector, fallbackSelectors = []) => {
+  const selectors = [primarySelector, ...fallbackSelectors]
+  const section = selectors
+    .map((selector) => document.querySelector(selector))
+    .find(Boolean)
   if (!section) return
   const header = document.querySelector('.site-header')
   const headerHeight = header ? header.getBoundingClientRect().height : 0
   const targetY = section.getBoundingClientRect().top + window.scrollY - headerHeight - 12
-  window.scrollTo({ top: Math.max(targetY, 0), behavior: 'smooth' })
-  highlightRsvpPanel()
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top: Math.max(targetY, 0), behavior: reduceMotion ? 'auto' : 'smooth' })
+}
+
+const scrollToElement = (element) => {
+  if (!element) return
+  const header = document.querySelector('.site-header')
+  const headerHeight = header ? header.getBoundingClientRect().height : 0
+  const targetY = element.getBoundingClientRect().top + window.scrollY - headerHeight - 12
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  window.scrollTo({ top: Math.max(targetY, 0), behavior: reduceMotion ? 'auto' : 'smooth' })
 }
 
 const handleRsvpSubmit = async () => {
@@ -412,6 +529,7 @@ const handleRsvpSubmit = async () => {
 
 const resetRsvpForm = () => {
   reset()
+  rsvpExpanded.value = true
 }
 
 </script>
@@ -652,13 +770,104 @@ const resetRsvpForm = () => {
 }
 
 .rsvp-panel {
-  box-shadow: 0 22px 44px -30px rgba(18, 52, 37, 0.28);
-  transition: box-shadow 860ms cubic-bezier(0.22, 1, 0.36, 1), border-color 860ms cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 18px 34px -30px rgba(18, 52, 37, 0.22);
+  transition: box-shadow 860ms cubic-bezier(0.22, 1, 0.36, 1), border-color 860ms cubic-bezier(0.22, 1, 0.36, 1), background-color 860ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.rsvp-reveal-shell {
+  position: relative;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transform: translate3d(0, 18px, 0);
+  transition: max-height 900ms cubic-bezier(0.22, 1, 0.36, 1), opacity 760ms ease, transform 760ms ease;
+}
+
+.rsvp-reveal-shell.is-expanded {
+  max-height: 1600px;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.rsvp-floating-global {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.rsvp-mobile-strip {
+  position: relative;
+  z-index: 1;
+}
+
+.rsvp-cta-section {
+  max-height: 420px;
+  overflow: hidden;
+  animation: cta-fade-up 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition: max-height 760ms cubic-bezier(0.22, 1, 0.36, 1), opacity 520ms ease, transform 520ms ease;
+}
+
+.rsvp-cta-section.is-collapsed {
+  max-height: 0;
+  opacity: 0;
+  transform: translate3d(0, -8px, 0);
+  pointer-events: none;
+}
+
+.rsvp-cta-section.is-fading {
+  opacity: 0;
+  transform: translate3d(0, -6px, 0);
+  transition: opacity 320ms ease, transform 420ms ease;
+}
+
+.rsvp-cta-heading {
+  font-size: clamp(1.7rem, 4vw, 2rem);
+  line-height: 1.18;
+  letter-spacing: 0.015em;
+  font-weight: 500;
+}
+
+.rsvp-cta-copy {
+  line-height: 1.95;
+  letter-spacing: 0.02em;
+}
+
+.rsvp-cta-link {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  border-bottom: 1px solid rgba(26, 67, 49, 0.24);
+  padding-bottom: 0.25rem;
+}
+
+.rsvp-cta-arrow {
+  font-size: 0.82rem;
+  transition: transform 260ms ease;
+}
+
+.rsvp-cta-link:hover {
+  color: rgba(18, 52, 37, 0.98);
+  border-bottom-color: rgba(26, 67, 49, 0.52);
+}
+
+.rsvp-cta-link:hover .rsvp-cta-arrow {
+  transform: translateX(3px);
+}
+
+@keyframes cta-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 .rsvp-panel--highlight {
   border-color: rgba(212, 175, 55, 0.52);
-  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.24), 0 24px 44px -28px rgba(18, 52, 37, 0.32);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2), 0 18px 34px -28px rgba(18, 52, 37, 0.24);
 }
 
 .rsvp-heading {
@@ -673,6 +882,7 @@ const resetRsvpForm = () => {
 .rsvp-subtitle {
   max-width: 32ch;
   text-wrap: balance;
+  line-height: 1.95;
 }
 
 .rsvp-guest-readonly {
@@ -684,7 +894,9 @@ const resetRsvpForm = () => {
 
 .rsvp-input {
   color: rgba(26, 67, 49, 0.86);
-  box-shadow: inset 0 0 0 1px rgba(26, 67, 49, 0.04);
+  border-color: rgba(26, 67, 49, 0.1);
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: inset 0 0 0 1px rgba(26, 67, 49, 0.03);
 }
 
 .rsvp-input:disabled {
@@ -697,20 +909,21 @@ const resetRsvpForm = () => {
 }
 
 .rsvp-input:focus {
-  border-color: rgba(212, 175, 55, 0.55);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 10px 24px -18px rgba(18, 52, 37, 0.3), inset 0 0 0 1px rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.42);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 8px 20px -20px rgba(18, 52, 37, 0.24), inset 0 0 0 1px rgba(212, 175, 55, 0.12);
 }
 
 .rsvp-submit-btn {
   gap: 0.5rem;
-  box-shadow: 0 16px 30px -18px rgba(18, 52, 37, 0.42);
+  background: rgba(26, 67, 49, 0.92);
+  box-shadow: 0 12px 24px -18px rgba(18, 52, 37, 0.28);
 }
 
 .rsvp-submit-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: #123425;
-  box-shadow: 0 18px 32px -18px rgba(18, 52, 37, 0.5);
+  transform: translateY(-1px);
+  background: rgba(18, 52, 37, 0.95);
+  box-shadow: 0 14px 24px -20px rgba(18, 52, 37, 0.3);
 }
 
 .rsvp-submit-btn:disabled {
@@ -893,6 +1106,8 @@ const resetRsvpForm = () => {
   .stagger-item,
   .hero-card-sheen,
   .editorial-invite-line,
+  .rsvp-cta-section,
+  .rsvp-reveal-shell,
   .rsvp-loading-dot {
     animation: none;
     opacity: 1;
@@ -906,6 +1121,10 @@ const resetRsvpForm = () => {
   .site-nav__item,
   .site-menu-btn,
   .site-mobile-menu__item,
+  .rsvp-cta-section,
+  .rsvp-cta-link,
+  .rsvp-cta-arrow,
+  .rsvp-reveal-shell,
   .rsvp-submit-btn,
   .rsvp-fade-enter-active,
   .rsvp-fade-leave-active,
