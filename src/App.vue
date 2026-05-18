@@ -78,10 +78,10 @@
             </div>
 
             <div class="stagger-item flex flex-wrap items-center justify-center gap-3 lg:justify-start" style="--stagger-index: 4">
-              <button type="button" @click="scrollToInvitationSection" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
+              <button type="button" @click="handlePrimaryCtaClick" class="hero-btn hero-btn--primary inline-flex h-11 items-center justify-center rounded-full px-7 text-[0.82rem] font-medium uppercase tracking-[0.16em] text-white transition duration-300">
                 Xem lời mời
               </button>
-              <button type="button" @click="scrollToScheduleSection" class="hero-btn hero-btn--secondary inline-flex h-11 items-center justify-center rounded-full border px-7 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-forest transition duration-300">
+              <button type="button" @click="handleSecondaryCtaClick" class="hero-btn hero-btn--secondary inline-flex h-11 items-center justify-center rounded-full border px-7 text-[0.8rem] font-medium uppercase tracking-[0.14em] text-forest transition duration-300">
                 Xem lịch trình
               </button>
             </div>
@@ -345,6 +345,7 @@ const rsvpHighlighted = ref(false)
 let timerId
 let highlightTimerId
 let rsvpCtaTimerId
+let scrollAtmosphereRafId = 0
 
 onMounted(() => {
   const preloadMainChunks = () => {
@@ -366,12 +367,19 @@ onMounted(() => {
   } else {
     window.setTimeout(preloadMainChunks, 1200)
   }
+
+  window.addEventListener('scroll', handleScrollAtmosphere, { passive: true })
 })
 
 onBeforeUnmount(() => {
   window.clearInterval(timerId)
   window.clearTimeout(highlightTimerId)
   window.clearTimeout(rsvpCtaTimerId)
+  if (scrollAtmosphereRafId) {
+    window.cancelAnimationFrame(scrollAtmosphereRafId)
+    scrollAtmosphereRafId = 0
+  }
+  window.removeEventListener('scroll', handleScrollAtmosphere)
 })
 
 watch(showMainContent, (isVisible) => {
@@ -437,7 +445,26 @@ const playInvitationMusic = async () => {
     await loadMusicBarComponent()
     await nextTick()
   }
-  musicBarRef.value?.playWithFade?.()
+  musicBarRef.value?.playWithCinematicDelay?.({ delayMs: 1000, fadeMs: 3200 })
+}
+
+const unlockMusicOnFirstIntent = async () => {
+  if (!musicBarRef.value) {
+    await loadMusicBarComponent()
+    await nextTick()
+  }
+  musicBarRef.value?.unlockByInteraction?.()
+  musicBarRef.value?.playWithCinematicDelay?.({ delayMs: 900, fadeMs: 2800 })
+}
+
+const handlePrimaryCtaClick = () => {
+  void unlockMusicOnFirstIntent()
+  scrollToInvitationSection()
+}
+
+const handleSecondaryCtaClick = () => {
+  void unlockMusicOnFirstIntent()
+  scrollToScheduleSection()
 }
 
 const highlightRsvpPanel = () => {
@@ -499,6 +526,37 @@ const scrollToInvitationSection = () => {
 
 const scrollToScheduleSection = () => {
   scrollToSection('#events')
+}
+
+const handleScrollAtmosphere = () => {
+  if (scrollAtmosphereRafId) return
+  scrollAtmosphereRafId = window.requestAnimationFrame(() => {
+    scrollAtmosphereRafId = 0
+    const viewportCenter = window.innerHeight * 0.48
+    const rsvpSection = document.querySelector('#rsvp')
+    const gallerySection = document.querySelector('#gallery')
+    const timelineSection = document.querySelector('#love-story')
+
+    const isInSection = (element) => {
+      if (!element) return false
+      const rect = element.getBoundingClientRect()
+      return rect.top <= viewportCenter && rect.bottom >= viewportCenter
+    }
+
+    if (isInSection(rsvpSection)) {
+      musicBarRef.value?.setAtmosphere?.('rsvp')
+      return
+    }
+    if (isInSection(gallerySection)) {
+      musicBarRef.value?.setAtmosphere?.('gallery')
+      return
+    }
+    if (isInSection(timelineSection)) {
+      musicBarRef.value?.setAtmosphere?.('timeline')
+      return
+    }
+    musicBarRef.value?.setAtmosphere?.('default')
+  })
 }
 
 const scrollToSection = (primarySelector, fallbackSelectors = []) => {

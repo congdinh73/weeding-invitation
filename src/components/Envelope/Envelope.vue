@@ -101,7 +101,11 @@ const openEnvelope = () => {
   if (isOpening.value) return
 
   isOpening.value = true
-  props.playMusic?.()
+  timers.push(
+    window.setTimeout(() => {
+      props.playMusic?.()
+    }, 950)
+  )
 
   timers.push(
     window.setTimeout(() => {
