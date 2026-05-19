@@ -1,7 +1,7 @@
 <template>
   <div class="music-orb-wrap">
     <audio ref="audioRef">
-      <source src="/turning-page.mp3" type="audio/mpeg" />
+      <source src="/beo-dat-may-troi.mp3" type="audio/mpeg" />
     </audio>
 
     <button

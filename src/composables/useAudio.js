@@ -3,10 +3,10 @@ import { computed, ref } from 'vue'
 const STORAGE_KEY = 'wedding_music_pref_v1'
 const MOBILE_QUERY = '(max-width: 767px)'
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-const DESKTOP_BASE_VOLUME = 0.15
-const MOBILE_BASE_VOLUME = 0.1
-const MIN_VOLUME = 0.06
-const MAX_VOLUME = 0.18
+const DESKTOP_BASE_VOLUME = 0.2
+const MOBILE_BASE_VOLUME = 0.14
+const MIN_VOLUME = 0.08
+const MAX_VOLUME = 0.24
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 
@@ -19,18 +19,26 @@ export function useAudio() {
   const atmosphere = ref('default')
   const fadeTimerId = ref(null)
   const pendingStartTimerId = ref(null)
-  const isMobile = window.matchMedia(MOBILE_QUERY).matches
+  const mobileMediaQuery = window.matchMedia(MOBILE_QUERY)
+  const isMobileViewport = ref(mobileMediaQuery.matches)
   const prefersReducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches
 
-  const baseVolume = isMobile ? MOBILE_BASE_VOLUME : DESKTOP_BASE_VOLUME
-  const atmosphereScaleMap = {
+  const desktopAtmosphereScaleMap = {
     default: 1,
     gallery: 1.08,
     timeline: 1.04,
     rsvp: 0.8
   }
+  const mobileAtmosphereScaleMap = {
+    default: 1,
+    gallery: 1.2,
+    timeline: 1.12,
+    rsvp: 0.74
+  }
 
   const targetVolume = computed(() => {
+    const baseVolume = isMobileViewport.value ? MOBILE_BASE_VOLUME : DESKTOP_BASE_VOLUME
+    const atmosphereScaleMap = isMobileViewport.value ? mobileAtmosphereScaleMap : desktopAtmosphereScaleMap
     const scale = atmosphereScaleMap[atmosphere.value] ?? 1
     return clamp(baseVolume * scale, MIN_VOLUME, MAX_VOLUME)
   })
@@ -92,8 +100,15 @@ export function useAudio() {
 
   const applyMuteState = () => {
     if (!audioEl.value) return
-    const mutedForAutoplayPolicy = isMobile && !hasInteracted.value
+    const mutedForAutoplayPolicy = isMobileViewport.value && !hasInteracted.value
     audioEl.value.muted = isMutedByUser.value || mutedForAutoplayPolicy
+  }
+
+  const handleViewportChange = (event) => {
+    isMobileViewport.value = event.matches
+    applyMuteState()
+    if (!audioEl.value || !isPlaying.value) return
+    fadeVolume(audioEl.value.volume, targetVolume.value, 900)
   }
 
   const unlockByInteraction = () => {
@@ -159,11 +174,13 @@ export function useAudio() {
     audioEl.value.volume = 0
     audioEl.value.setAttribute('playsinline', '')
     applyMuteState()
+    mobileMediaQuery.addEventListener('change', handleViewportChange)
   }
 
   const destroy = () => {
     clearFadeTimer()
     clearPendingStart()
+    mobileMediaQuery.removeEventListener('change', handleViewportChange)
   }
 
   return {
